@@ -31,7 +31,7 @@ namespace RecoilReworkClient.Physics
             float dt = Mathf.Min(deltaTime * Speed, 0.05f);
             if (dt <= 0f) return Position;
 
-            float omega = 2f * Mathf.PI * Frequency;
+            float omega = 2f * Mathf.PI * Frequency / Mathf.Sqrt(Mathf.Max(Mass, 0.0001f));
             float zeta = Mathf.Max(0f, DampingRatio);
 
             float f = 1f + 2f * dt * zeta * omega;

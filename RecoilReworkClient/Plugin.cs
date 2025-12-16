@@ -1,7 +1,11 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using GPUInstancer;
+using RecoilReworkClient.Helpers;
+using RecoilReworkClient.Models;
 using RecoilReworkClient.Patches;
 using System;
+using System.Collections.Generic;
 
 namespace RecoilReworkClient;
 
@@ -9,6 +13,8 @@ namespace RecoilReworkClient;
 public class Plugin : BaseUnityPlugin
 {
     internal static new ManualLogSource Logger;
+
+    public static Dictionary<string, CaliberData> CaliberData;
 
     private void Awake()
     {
@@ -18,6 +24,7 @@ public class Plugin : BaseUnityPlugin
         try
         {
             EnablePatches();
+            FetchData();
             
             Logger.LogInfo($"Loaded Recoil Rework {MyPluginInfo.PLUGIN_VERSION}!");
         }
@@ -36,5 +43,15 @@ public class Plugin : BaseUnityPlugin
         new ShotEffectorProcessPatch().Enable();
         new PlayerInitPatch().Enable();
         new LerpCameraPatch().Enable();
+    }
+
+    private static void FetchData()
+    {
+        CaliberData = RouteHelper.FetchCaliberData();
+        Plugin.Logger.LogInfo(CaliberData.Count);
+        foreach (var caliber in CaliberData)
+        {
+            Plugin.Logger.LogInfo(caliber.Key);
+        }
     }
 }

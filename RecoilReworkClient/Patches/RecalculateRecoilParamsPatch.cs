@@ -4,6 +4,7 @@ using EFT.Animations.NewRecoil;
 using HarmonyLib;
 using RecoilReworkClient.Controllers;
 using SPT.Reflection.Patching;
+using System;
 using System.Reflection;
 
 namespace RecoilReworkClient.Patches
@@ -18,13 +19,21 @@ namespace RecoilReworkClient.Patches
         [PatchPostfix]
         private static void Postfix(NewRecoilShotEffect __instance)
         {
-            Player.FirearmController fc = __instance.FirearmController;
-            Player player = fc.GetComponent<Player>();
-            ProceduralWeaponAnimation pwa = player.ProceduralWeaponAnimation;
+            try
+            {
+                Player.FirearmController fc = __instance.FirearmController;
+                Player player = fc.GetComponent<Player>();
+                ProceduralWeaponAnimation pwa = player.ProceduralWeaponAnimation;
 
-            pwa.CrankRecoil = true;
-            
-            RecoilController.Instance?.RecalculateRecoilForces(player.ProceduralWeaponAnimation, fc.Weapon);
+                pwa.CrankRecoil = true;
+
+                RecoilController.Instance?.RecalculateRecoilForces(player.ProceduralWeaponAnimation, fc.Weapon);
+            }
+            catch (Exception ex)
+            {
+                Plugin.Logger.LogError(ex);
+                throw;
+            }
         }
     }
 }
