@@ -1,0 +1,16 @@
+﻿/*
+{
+  "CustomCaliber762x39": { // 7.62x39
+    "BaseVerticalKick": 50,
+    "BaseHorizontalKick": 50,
+    "BaseRollKick": 200,
+    "BaseBackwardsRecoil": 5
+  },
+  "CustomCaliber9x18PM": { // 9x18mm, weaker
+    "BaseVerticalKick": 50,
+    "BaseHorizontalKick": 50,
+    "BaseRollKick": 200,
+    "BaseBackwardsRecoil": 5
+  }
+}
+*/

@@ -11,18 +11,14 @@ namespace RecoilReworkServer.Routes
     [Injectable]
     public class RecoilReworkRouter : StaticRouter
     {
-        private static HttpResponseUtil? _httpResponseUtil;
         private static JsonUtil? _jsonUtil;
 
         public RecoilReworkRouter(
-            JsonUtil jsonUtil,
-            HttpResponseUtil httpResponseUtil,
-            SptLogger<RecoilReworkRouter> logger) : base(
+            JsonUtil jsonUtil) : base(
             jsonUtil,
             GetRoutes()
         )
         {
-            _httpResponseUtil = httpResponseUtil;
             _jsonUtil = jsonUtil;
         }
 
@@ -36,7 +32,7 @@ namespace RecoilReworkServer.Routes
                     {
                         Dictionary<string, CaliberData> data = Globals.CaliberData;
                         string json = _jsonUtil?.Serialize(data) ?? "{}";
-                        return json;
+                        return await ValueTask.FromResult(json);
                     }
                 )
             ];

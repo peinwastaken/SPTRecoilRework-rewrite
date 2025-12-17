@@ -11,7 +11,7 @@
     "BaseRollKick": 200,
     "BaseBackwardsRecoil": 5
   },
-  "Caliber9x18PM": { // 9x18, weaker
+  "Caliber9x18PM": { // 9x18mm, weaker
     "BaseVerticalKick": 50,
     "BaseHorizontalKick": 50,
     "BaseRollKick": 200,
