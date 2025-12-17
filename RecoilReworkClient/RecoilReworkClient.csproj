@@ -50,4 +50,22 @@
         <Private>False</Private>
       </Reference>
     </ItemGroup>
+
+    <ItemGroup>
+        <None Include="$(MSBuildProjectFullPath).user" Condition="Exists('$(MSBuildProjectFullPath).user')" />
+    </ItemGroup>
+
+    <Target Name="CopyToSPT" AfterTargets="AfterBuild" Condition="'$(SPTPath)' != ''">
+        <PropertyGroup>
+            <ModsDirectoryPath>$(SPTPath)\BepInEx\plugins\$(MSBuildProjectName)</ModsDirectoryPath>
+        </PropertyGroup>
+
+        <Message Importance="high" Text="Copying mods to $(ModsDirectoryPath)" />
+        <ItemGroup>
+            <FilesToCopy Include="$(OutputPath)$(TargetName)$(TargetExt)" />
+            <FilesToCopy Include="$(OutputPath)$(TargetName).pdb" />
+        </ItemGroup>
+        <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(ModsDirectoryPath)\%(RecursiveDir)" ContinueOnError="false" />
+        <Message Importance="high" Text="Files copied" />
+    </Target>
 </Project>

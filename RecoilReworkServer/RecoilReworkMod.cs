@@ -13,14 +13,14 @@ namespace RecoilReworkServer
     public class RecoilReworkMod(ISptLogger<RecoilReworkMod> logger, ModHelper modHelper) : IOnLoad
     {
         public string ModPath => modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
-        public string DataPath => Path.Combine(ModPath, "Data");
+        public string ConfigPath => Path.Combine(ModPath, "Config");
         
         public List<string> RandomStrings = [];
         
         public Task OnLoad()
         {
-            Globals.CaliberData = modHelper.GetJsonDataFromFile<Dictionary<string, CaliberData>>(DataPath, "caliberdata.jsonc");
-            RandomStrings = modHelper.GetJsonDataFromFile<List<string>>(DataPath, "randomstrings.jsonc");
+            Globals.CaliberData = modHelper.GetJsonDataFromFile<Dictionary<string, CaliberData>>(ConfigPath, "caliberdata.jsonc");
+            RandomStrings = modHelper.GetJsonDataFromFile<List<string>>(ConfigPath, "randomstrings.jsonc");
             
             logger.LogWithColor($"Successfully loaded Recoil Rework. Loaded data for {Globals.CaliberData.Count} calibers. {RandomStrings.GetRandom()}", LogTextColor.Magenta);
             
