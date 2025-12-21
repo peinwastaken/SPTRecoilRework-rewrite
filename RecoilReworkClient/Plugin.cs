@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
-using GPUInstancer;
+using RecoilReworkClient.Config;
+using RecoilReworkClient.Config.Settings;
 using RecoilReworkClient.Helpers;
 using RecoilReworkClient.Models;
 using RecoilReworkClient.Patches;
@@ -25,6 +26,7 @@ public class Plugin : BaseUnityPlugin
         {
             EnablePatches();
             FetchData();
+            BindConfigs();
             
             Logger.LogInfo($"Loaded Recoil Rework {MyPluginInfo.PLUGIN_VERSION}!");
         }
@@ -35,7 +37,7 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-    private static void EnablePatches()
+    private void EnablePatches()
     {
         new ComplexRotationPatch().Enable();
         new RecalculateRecoilParamsPatch().Enable();
@@ -45,7 +47,13 @@ public class Plugin : BaseUnityPlugin
         new LerpCameraPatch().Enable();
     }
 
-    private static void FetchData()
+    private void BindConfigs()
+    {
+        GeneralSettings.Bind(0, Category.General, Config);
+        WeaponKickSettings.Bind(1, Category.WeaponKick, Config);
+    }
+
+    private void FetchData()
     {
         CaliberData = RouteHelper.FetchCaliberData();
         Plugin.Logger.LogInfo(CaliberData.Count);

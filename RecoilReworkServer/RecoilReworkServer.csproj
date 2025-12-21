@@ -18,6 +18,10 @@
       <Folder Include="Resources\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="RecoilReworkServer.csproj.user" />
+    </ItemGroup>
+
     <Target Name="CopyToSPT" AfterTargets="AfterBuild" Condition="'$(SPTPath)' != ''">
         <PropertyGroup>
             <ModsDirectoryPath>$(SPTPath)\SPT\user\mods\$(MSBuildProjectName)</ModsDirectoryPath>

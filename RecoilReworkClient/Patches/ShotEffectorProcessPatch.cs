@@ -1,3 +1,4 @@
+using EFT;
 using HarmonyLib;
 using RecoilReworkClient.Controllers;
 using SPT.Reflection.Patching;
@@ -15,6 +16,11 @@ namespace RecoilReworkClient.Patches
         [PatchPrefix]
         private static bool Prefix(ShotEffector __instance)
         {
+            Player.FirearmController fc = __instance.FirearmController;
+            Player player = fc.GetComponent<Player>();
+
+            if (!player.IsYourPlayer) return true;
+            
             RecoilController.Instance?.OnShoot();
             
             return false;

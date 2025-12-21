@@ -1,7 +1,13 @@
+using BepInEx.Configuration;
 using EFT;
 using EFT.Animations;
 using EFT.InventoryLogic;
+using HarmonyLib;
+using RecoilReworkClient.Config.Settings;
+using RecoilReworkClient.Enum;
 using RecoilReworkClient.Helpers;
+using RecoilReworkClient.Models;
+using System.Reflection;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Spring = RecoilReworkClient.Physics.Spring;
@@ -24,15 +30,15 @@ namespace RecoilReworkClient.Controllers
         public float recoilPosInverseMult = 0.02f;
         public float recoilBackPosCamVertOffsetMult = 1f;
 
-        public float KickPitchForce = -70f;
+        public float KickPitchForce = 70f;
         public float KickYawForce = 30f;
         public float KickRollForce = 200f;
 
         public float PositionBackwardsForce = 2f;
-        public float PositionUpwardsForce = -1f;
+        public float PositionUpwardsForce = 1f;
         public float PositionSidewaysForce = 0f;
         
-        public float AnglePitchForce = -20f;
+        public float AnglePitchForce = 20f;
         public float AngleYawForce = 10f;
         public float AngleRollForce = 0f;
         
@@ -53,6 +59,13 @@ namespace RecoilReworkClient.Controllers
         private Vector3 _tempPos = Vector3.zero;
         private Quaternion _tempRot = Quaternion.identity;
         private Quaternion _localRot = Quaternion.identity;
+        private Quaternion _scopeRot = Quaternion.identity;
+
+        private FieldInfo _adjustCollimatorsToTrajectoryField;
+        private FieldInfo _hasPairOfIronsTransformsField;
+        private FieldInfo _currentLosDeltaAngleField;
+        private FieldInfo _losDeltaAngleField;
+        private FieldInfo _targetScopeRotationField;
 
         private void Awake()
         {
@@ -61,6 +74,12 @@ namespace RecoilReworkClient.Controllers
                 Destroy(this);
                 return;
             }
+
+            _adjustCollimatorsToTrajectoryField = AccessTools.Field(typeof(ProceduralWeaponAnimation), "_adjustCollimatorsToTrajectory");
+            _hasPairOfIronsTransformsField = AccessTools.Field(typeof(ProceduralWeaponAnimation), "_hasPairOfIronSightTransforms");
+            _currentLosDeltaAngleField = AccessTools.Field(typeof(ProceduralWeaponAnimation), "_currentLineOfSightDeltaAngle");
+            _losDeltaAngleField = AccessTools.Field(typeof(ProceduralWeaponAnimation), "_lineOfSightDeltaAngle");
+            _targetScopeRotationField = AccessTools.Field(typeof(ProceduralWeaponAnimation), "_targetScopeRotation");
 
             Instance = this;
             player = GetComponent<Player>();
@@ -112,35 +131,75 @@ namespace RecoilReworkClient.Controllers
 
         public void RecalculateRecoilForces(ProceduralWeaponAnimation pwa, Weapon weapon)
         {
+            CaliberData caliberData = weapon.GetCaliberData();
+            float kickMult = weapon.GetKickMultiplier();
+            
+            bool isPistol = weapon.IsPistol();
             bool hasStock = weapon.HasStock() && !weapon.Folded;
             float totalWeight = weapon.TotalWeight;
+            
+            float verticalKick = caliberData.BaseVerticalKick * kickMult;
+            float horizontalKick = caliberData.BaseHorizontalKick * kickMult;
+            float rollKick = caliberData.BaseRollKick * kickMult;
 
+            float verticalAngle = verticalKick * GeneralSettings.WeaponKickToAngleMult.Value;
+            float horizontalAngle = horizontalKick * GeneralSettings.WeaponKickToAngleMult.Value;
+            
+            // set caliber kick and recoil properties
+            KickPitchForce = verticalKick;
+            KickYawForce = horizontalKick;
+            KickRollForce = rollKick;
+
+            AnglePitchForce = verticalAngle + verticalAngle * weapon.RecoilDelta;
+            AngleYawForce = horizontalAngle + horizontalAngle * weapon.RecoilDelta;
+            
+            PositionBackwardsForce = caliberData.BaseBackwardsRecoil;
+
+            // calculate weapon kick damping
             float baseKickDamping = 0.3f;
             float kickWeightCoefficient = 0.02f;
             float finalKickDamping = baseKickDamping + (totalWeight * kickWeightCoefficient);
-            
-            Plugin.Logger.LogInfo($"weapon is {totalWeight} kg");
-            Plugin.Logger.LogInfo($"weapon has stock enabled: {hasStock}");
-
-            recoilBackPosCamVertOffsetMult = hasStock ? 0.3f : 1f;
-
             WeaponKickSpring.DampingRatio = finalKickDamping;
+            
+            // other calculations go...
+            // ...HERE!
+            // end calculations.
+            
+            // recoil vertical mult based on if weapon is pistol
+            if (isPistol)
+            {
+                recoilBackPosCamVertOffsetMult = 0f;
+                PositionUpwardsForce = 0f;
+            }
+            else
+            {
+                recoilBackPosCamVertOffsetMult = -weapon.StockRecoilDelta;
+                PositionUpwardsForce = PositionBackwardsForce * 0.07f;
+            }
+
+            // set pwa properties
+            pwa.CrankRecoil = GeneralSettings.CrankRecoil.Value;
+            pwa.CameraSmoothRecoil = isPistol ? GeneralSettings.PistolCameraSnap.Value : GeneralSettings.RifleCameraSnap.Value;
         }
         
         public void OnShoot()
         {
             Player.FirearmController fc = player.GetComponent<Player.FirearmController>();
             Weapon weapon = fc.Weapon;
+            EWeaponClass weaponClass = weapon.GetWeaponClass();
+            ConfigEntry<float> kickMult = WeaponHelper.WeaponKickMultipliers[weaponClass];
             
             bool hasStock = weapon.HasStock() && !weapon.Folded;
             
-            Vector3 recoilKickForce = new Vector3(KickPitchForce, KickRollForce, KickYawForce);
-            Vector3 recoilAngForce = new Vector3(AnglePitchForce, AngleRollForce, AngleYawForce);
-            Vector3 recoilPosForce = new Vector3(PositionSidewaysForce, PositionBackwardsForce, PositionUpwardsForce);
+            Vector3 recoilKickForce = new Vector3(-KickPitchForce, KickRollForce, KickYawForce);
+            Vector3 recoilAngForce = new Vector3(-AnglePitchForce, AngleRollForce, AngleYawForce);
+            Vector3 recoilPosForce = new Vector3(PositionSidewaysForce, PositionBackwardsForce, -PositionUpwardsForce);
 
             recoilKickForce.z *= Random.Range(-1f, 1f);
             recoilAngForce.z *= Random.Range(-1f, 1f);
             recoilPosForce.x *= Random.Range(-1f, 1f);
+
+            recoilKickForce *= kickMult.Value;
 
             if (hasStock)
             {
@@ -156,6 +215,13 @@ namespace RecoilReworkClient.Controllers
                 recoilPosForce.y *= 0.7f;
                 recoilPosForce.z *= 0.3f;
             }
+
+            recoilKickForce *= Random.Range(0.9f, 1.1f);
+            
+            recoilAngForce.x *= Random.Range(0.9f, 1.8f);
+            recoilAngForce.y *= Random.Range(0.9f, 1.2f);
+
+            recoilAngForce *= player.ProceduralWeaponAnimation.IsAiming ? 1f : 2f;
             
             WeaponKickSpring.ApplyImpulse(recoilKickForce);
             WeaponPositionSpring.ApplyImpulse(recoilPosForce);
@@ -187,9 +253,15 @@ namespace RecoilReworkClient.Controllers
 
             // do recoil position
             _tempPos += _tempRot * WeaponPositionSpring.Position;
+            
+            ApplyAimingAlignment(dt);
+            
+            // current scope rotation
+            Quaternion targetScopeRotation = (Quaternion)_targetScopeRotationField.GetValue(pwa);
+            _scopeRot = Quaternion.Lerp(_scopeRot, pwa.IsAiming ? targetScopeRotation : Quaternion.identity, pwa.CameraSmoothTime * pwa.AimingSpeed * dt);
 
             pwa.HandsContainer.WeaponRootAnim
-            .SetPositionAndRotation(_tempPos, _tempRot);
+            .SetPositionAndRotation(_tempPos, _tempRot * _scopeRot);
         }
         
         private void DeferredRotate(ProceduralWeaponAnimation pwa, Vector3 worldPivot, Vector3 rotation)
@@ -203,6 +275,29 @@ namespace RecoilReworkClient.Controllers
 
             _tempRot = quat1;
             _tempPos = worldPivot + vec1;
+        }
+        
+        private void ApplyAimingAlignment(float dt)
+        {
+            ProceduralWeaponAnimation pwa = player.ProceduralWeaponAnimation;
+            bool adjustCollimatorsToTrajectory = (bool)_adjustCollimatorsToTrajectoryField.GetValue(pwa);
+            bool hasPairOfIrons = (bool)_hasPairOfIronsTransformsField.GetValue(pwa);
+
+            if (adjustCollimatorsToTrajectory || hasPairOfIrons)
+            {
+                bool isAiming = pwa.IsAiming;
+                float currentLosDeltaAngle = (float)_currentLosDeltaAngleField.GetValue(pwa);
+                float losDeltaAngle = (float)_losDeltaAngleField.GetValue(pwa);
+
+                float newCurrentLosDeltaAngle = Mathf.Lerp(currentLosDeltaAngle, isAiming ? losDeltaAngle : 0f, dt * 5f);
+                _currentLosDeltaAngleField.SetValue(pwa, newCurrentLosDeltaAngle);
+
+                if (Mathf.Abs((float)_currentLosDeltaAngleField.GetValue(pwa)) > 0.002f)
+                {
+                    float angle = (float)_currentLosDeltaAngleField.GetValue(pwa);
+                    DeferredRotate(pwa, pwa.HandsContainer.Fireport.position, _tempRot * new Vector3(angle, 0f, 0f));
+                }
+            }
         }
     }
 }

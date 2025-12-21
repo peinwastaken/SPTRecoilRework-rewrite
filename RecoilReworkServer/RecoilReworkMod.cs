@@ -22,7 +22,6 @@ namespace RecoilReworkServer
             
             List<string> customDataFiles = Directory.GetFiles(CustomCaliberDataPath).ToList();
             
-            int customCount = 0;
             foreach (string file in customDataFiles)
             {
                 string extension = Path.GetExtension(file);
@@ -36,7 +35,6 @@ namespace RecoilReworkServer
                 foreach (var data in customCaliberData)
                 {
                     caliberData.Add(data.Key, data.Value);
-                    customCount++;
                 }
             }
 

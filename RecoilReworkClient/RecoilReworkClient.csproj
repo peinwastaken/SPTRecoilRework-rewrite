@@ -55,6 +55,10 @@
         <None Include="$(MSBuildProjectFullPath).user" Condition="Exists('$(MSBuildProjectFullPath).user')" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="RecoilReworkClient.csproj.user" />
+    </ItemGroup>
+
     <Target Name="CopyToSPT" AfterTargets="AfterBuild" Condition="'$(SPTPath)' != ''">
         <PropertyGroup>
             <ModsDirectoryPath>$(SPTPath)\BepInEx\plugins\$(MSBuildProjectName)</ModsDirectoryPath>
