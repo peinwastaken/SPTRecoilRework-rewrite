@@ -57,7 +57,7 @@ namespace RecoilReworkClient.Config.Settings
             AssaultCarbineKick = config.Bind(
                 category,
                 "Assault Carbine Kick Multiplier",
-                0.8f,
+                1f,
                 new ConfigDescription(
                     "Weapon kick impulse multiplier for assault carbines",
                     new AcceptableValueRange<float>(0.1f, 3f),
@@ -68,7 +68,7 @@ namespace RecoilReworkClient.Config.Settings
             SubMachineGunKick = config.Bind(
                 category,
                 "Submachine Gun Kick Multiplier",
-                0.7f,
+                1f,
                 new ConfigDescription(
                     "Weapon kick impulse multiplier for SMGs",
                     new AcceptableValueRange<float>(0.1f, 3f),
@@ -90,7 +90,7 @@ namespace RecoilReworkClient.Config.Settings
             MachineGunKick = config.Bind(
                 category,
                 "Machine Gun Kick Multiplier",
-                0.8f,
+                1.3f,
                 new ConfigDescription(
                     "Weapon kick impulse multiplier for machine guns",
                     new AcceptableValueRange<float>(0.1f, 3f),
@@ -101,7 +101,7 @@ namespace RecoilReworkClient.Config.Settings
             MarksmanRifleKick = config.Bind(
                 category,
                 "Marksman Rifle Kick Multiplier",
-                1.3f,
+                1.4f,
                 new ConfigDescription(
                     "Weapon kick impulse multiplier for marksman rifles",
                     new AcceptableValueRange<float>(0.1f, 3f),
@@ -123,7 +123,7 @@ namespace RecoilReworkClient.Config.Settings
             GrenadeLauncherKick = config.Bind(
                 category,
                 "Grenade Launcher Kick Multiplier",
-                2.0f,
+                2f,
                 new ConfigDescription(
                     "Weapon kick impulse multiplier for grenade launchers",
                     new AcceptableValueRange<float>(0.1f, 3f),

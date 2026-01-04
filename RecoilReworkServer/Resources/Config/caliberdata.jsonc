@@ -5,153 +5,153 @@
     "BaseRollKick": 50,
     "BaseBackwardsRecoil": 1.5
   },
-  "Caliber762x39": { // 7.62x39
-    "BaseVerticalKick": 90,
-    "BaseHorizontalKick": 60,
+  "Caliber762x39": { // 7.62x39 (baseline)
+    "BaseVerticalKick": 40,
+    "BaseHorizontalKick": 30,
     "BaseRollKick": 120,
-    "BaseBackwardsRecoil": 3
+    "BaseBackwardsRecoil": 4
   },
   "Caliber9x18PM": { // 9x18mm, weaker
-    "BaseVerticalKick": 15,
-    "BaseHorizontalKick": 10,
-    "BaseRollKick": 15,
-    "BaseBackwardsRecoil": 1
+    "BaseVerticalKick": 12,
+    "BaseHorizontalKick": 8,
+    "BaseRollKick": 20,
+    "BaseBackwardsRecoil": 1.5
   },
   "Caliber9x18PMM": { // 9x18mm, stronger
-    "BaseVerticalKick": 20,
-    "BaseHorizontalKick": 15,
-    "BaseRollKick": 20,
-    "BaseBackwardsRecoil": 1
+    "BaseVerticalKick": 16,
+    "BaseHorizontalKick": 10,
+    "BaseRollKick": 30,
+    "BaseBackwardsRecoil": 1.8
   },
   "Caliber9x19PARA": { // 9mm
-    "BaseVerticalKick": 30,
-    "BaseHorizontalKick": 25,
-    "BaseRollKick": 40,
-    "BaseBackwardsRecoil": 1.5
+    "BaseVerticalKick": 18,
+    "BaseHorizontalKick": 10,
+    "BaseRollKick": 45,
+    "BaseBackwardsRecoil": 2.2
   },
-  "Caliber46x30": { // 4.6x39, mp7
-    "BaseVerticalKick": 40,
-    "BaseHorizontalKick": 30,
+  "Caliber46x30": { // 4.6x30, mp7
+    "BaseVerticalKick": 22,
+    "BaseHorizontalKick": 15,
     "BaseRollKick": 40,
-    "BaseBackwardsRecoil": 2
+    "BaseBackwardsRecoil": 2.5
   },
   "Caliber9x21": { // 9x21, sr-2m
-    "BaseVerticalKick": 35,
-    "BaseHorizontalKick": 25,
-    "BaseRollKick": 45,
-    "BaseBackwardsRecoil": 1.5
+    "BaseVerticalKick": 25,
+    "BaseHorizontalKick": 18,
+    "BaseRollKick": 50,
+    "BaseBackwardsRecoil": 2.8
   },
   "Caliber57x28": { // 5.7x28, five-seven
-    "BaseVerticalKick": 40,
-    "BaseHorizontalKick": 30,
-    "BaseRollKick": 50,
-    "BaseBackwardsRecoil": 2
+    "BaseVerticalKick": 24,
+    "BaseHorizontalKick": 16,
+    "BaseRollKick": 55,
+    "BaseBackwardsRecoil": 2.8
   },
   "Caliber762x25TT": { // 7.62x25, tokarev
-    "BaseVerticalKick": 45,
-    "BaseHorizontalKick": 35,
-    "BaseRollKick": 50,
-    "BaseBackwardsRecoil": 2
+    "BaseVerticalKick": 10,
+    "BaseHorizontalKick": 6,
+    "BaseRollKick": 20,
+    "BaseBackwardsRecoil": 1.5
   },
   "Caliber1143x23ACP": { // .45 acp, 1911
-    "BaseVerticalKick": 50,
-    "BaseHorizontalKick": 40,
-    "BaseRollKick": 60,
-    "BaseBackwardsRecoil": 2
+    "BaseVerticalKick": 32,
+    "BaseHorizontalKick": 22,
+    "BaseRollKick": 70,
+    "BaseBackwardsRecoil": 3.5
   },
   "Caliber9x33R": { // .357 magnum, deagle
-    "BaseVerticalKick": 60,
+    "BaseVerticalKick": 55,
     "BaseHorizontalKick": 35,
-    "BaseRollKick": 80,
-    "BaseBackwardsRecoil": 2
+    "BaseRollKick": 100,
+    "BaseBackwardsRecoil": 4.5
   },
   "Caliber545x39": { // 5.45x39, ak74
-    "BaseVerticalKick": 70,
-    "BaseHorizontalKick": 45,
-    "BaseRollKick": 130,
-    "BaseBackwardsRecoil": 2.5
+    "BaseVerticalKick": 30,
+    "BaseHorizontalKick": 22,
+    "BaseRollKick": 120,
+    "BaseBackwardsRecoil": 3.5
   },
   "Caliber556x45NATO": { // 5.56, m4
-    "BaseVerticalKick": 55,
-    "BaseHorizontalKick": 25,
-    "BaseRollKick": 100,
-    "BaseBackwardsRecoil": 2
+    "BaseVerticalKick": 28,
+    "BaseHorizontalKick": 20,
+    "BaseRollKick": 120,
+    "BaseBackwardsRecoil": 3.8
   },
   "Caliber9x39": { // 9x39, as-val / vss
-    "BaseVerticalKick": 50,
-    "BaseHorizontalKick": 25,
-    "BaseRollKick": 90,
-    "BaseBackwardsRecoil": 2.5
+    "BaseVerticalKick": 30,
+    "BaseHorizontalKick": 15,
+    "BaseRollKick": 120,
+    "BaseBackwardsRecoil": 4
   },
   "Caliber762x35": { // .300 blackout, mcx
-    "BaseVerticalKick": 65,
-    "BaseHorizontalKick": 35,
+    "BaseVerticalKick": 30,
+    "BaseHorizontalKick": 15,
     "BaseRollKick": 120,
-    "BaseBackwardsRecoil": 2
+    "BaseBackwardsRecoil": 4
   },
   "Caliber366TKM": { // .366 tkm, vpo
-    "BaseVerticalKick": 130,
-    "BaseHorizontalKick": 80,
-    "BaseRollKick": 150,
-    "BaseBackwardsRecoil": 3
+    "BaseVerticalKick": 45,
+    "BaseHorizontalKick": 35,
+    "BaseRollKick": 120,
+    "BaseBackwardsRecoil": 4.5
   },
   "Caliber762x51": { // 7.62x51 nato, sr-25
-    "BaseVerticalKick": 150,
-    "BaseHorizontalKick": 90,
-    "BaseRollKick": 150,
-    "BaseBackwardsRecoil": 3
-  },
-  "Caliber127x55": { // 12.7x55, ash-12
-    "BaseVerticalKick": 90,
-    "BaseHorizontalKick": 60,
-    "BaseRollKick": 120,
-    "BaseBackwardsRecoil": 3
-  },
-  "Caliber762x54R": { // 7.62x54r, mosin / pkm
-    "BaseVerticalKick": 180,
-    "BaseHorizontalKick": 120,
-    "BaseRollKick": 150,
-    "BaseBackwardsRecoil": 3
-  },
-  "Caliber86x70": { // .338 lapua, axmc / mk-18
-    "BaseVerticalKick": 300,
-    "BaseHorizontalKick": 180,
-    "BaseRollKick": 250,
-    "BaseBackwardsRecoil": 3
-  },
-  "Caliber20g": { // 20gauge, toz
-    "BaseVerticalKick": 70,
-    "BaseHorizontalKick": 50,
-    "BaseRollKick": 100,
-    "BaseBackwardsRecoil": 2.5
-  },
-  "Caliber12g": { // 12gauge, saiga / mp133
-    "BaseVerticalKick": 120,
-    "BaseHorizontalKick": 80,
-    "BaseRollKick": 150,
-    "BaseBackwardsRecoil": 3
-  },
-  "Caliber23x75": { // 4gauge, ks-23m
-    "BaseVerticalKick": 250,
-    "BaseHorizontalKick": 150,
-    "BaseRollKick": 250,
-    "BaseBackwardsRecoil": 2.5
-  },
-  "Caliber26x75": { // flare cartridge, flare gun
     "BaseVerticalKick": 35,
     "BaseHorizontalKick": 25,
-    "BaseRollKick": 30,
+    "BaseRollKick": 120,
+    "BaseBackwardsRecoil": 5.5
+  },
+  "Caliber127x55": { // 12.7x55, ash-12
+    "BaseVerticalKick": 55,
+    "BaseHorizontalKick": 45,
+    "BaseRollKick": 120,
+    "BaseBackwardsRecoil": 6.5
+  },
+  "Caliber762x54R": { // 7.62x54r, mosin / pkm
+    "BaseVerticalKick": 40,
+    "BaseHorizontalKick": 30,
+    "BaseRollKick": 120,
+    "BaseBackwardsRecoil": 6
+  },
+  "Caliber86x70": { // .338 lapua, axmc / mk-18
+    "BaseVerticalKick": 100,
+    "BaseHorizontalKick": 80,
+    "BaseRollKick": 120,
+    "BaseBackwardsRecoil": 9
+  },
+  "Caliber20g": { // 20gauge, toz
+    "BaseVerticalKick": 30,
+    "BaseHorizontalKick": 20,
+    "BaseRollKick": 70,
+    "BaseBackwardsRecoil": 9
+  },
+  "Caliber12g": { // 12gauge, saiga / mp133
+    "BaseVerticalKick": 40,
+    "BaseHorizontalKick": 20,
+    "BaseRollKick": 100,
+    "BaseBackwardsRecoil": 9
+  },
+  "Caliber23x75": { // 4gauge, ks-23m
+    "BaseVerticalKick": 50,
+    "BaseHorizontalKick": 30,
+    "BaseRollKick": 130,
+    "BaseBackwardsRecoil": 10
+  },
+  "Caliber26x75": { // flare cartridge, flare gun
+    "BaseVerticalKick": 10,
+    "BaseHorizontalKick": 10,
+    "BaseRollKick": 25,
     "BaseBackwardsRecoil": 0.5
   },
   "Caliber30x29": { // vog-30, ubgl (ak)
-    "BaseVerticalKick": 25,
-    "BaseHorizontalKick": 25,
+    "BaseVerticalKick": 20,
+    "BaseHorizontalKick": 20,
     "BaseRollKick": 40,
     "BaseBackwardsRecoil": 0.5
   },
   "Caliber40x46": { // m4a1, ubgl (ar) / fn40gl
-    "BaseVerticalKick": 25,
-    "BaseHorizontalKick": 25,
+    "BaseVerticalKick": 20,
+    "BaseHorizontalKick": 20,
     "BaseRollKick": 40,
     "BaseBackwardsRecoil": 0.5
   },
@@ -162,16 +162,16 @@
     "BaseBackwardsRecoil": 0.5
   },
   "Caliber127x108": { // 12.7x108, utyos
-    "BaseVerticalKick": 400,
-    "BaseHorizontalKick": 300,
-    "BaseRollKick": 300,
-    "BaseBackwardsRecoil": 3
+    "BaseVerticalKick": 80,
+    "BaseHorizontalKick": 80,
+    "BaseRollKick": 120,
+    "BaseBackwardsRecoil": 7
   },
-  "Caliber68x51": { // 6.2x51, spear
-    "BaseVerticalKick": 65,
-    "BaseHorizontalKick": 40,
-    "BaseRollKick": 130,
-    "BaseBackwardsRecoil": 2
+  "Caliber68x51": { // 6.8x51, spear
+    "BaseVerticalKick": 45,
+    "BaseHorizontalKick": 30,
+    "BaseRollKick": 120,
+    "BaseBackwardsRecoil": 4.5
   },
   "Caliber20x1mm": { // 20x1, blicky
     "BaseVerticalKick": 5,
@@ -180,9 +180,15 @@
     "BaseBackwardsRecoil": 0
   },
   "Caliber127x33": { // .50 ae, deagle
-    "BaseVerticalKick": 90,
-    "BaseHorizontalKick": 60,
-    "BaseRollKick": 100,
-    "BaseBackwardsRecoil": 2
+    "BaseVerticalKick": 75,
+    "BaseHorizontalKick": 50,
+    "BaseRollKick": 120,
+    "BaseBackwardsRecoil": 5
+  },
+  "Caliber127x99": { // .50 bmg, ak50 / barret (wtt-armory)
+    "BaseVerticalKick": 120,
+    "BaseHorizontalKick": 120,
+    "BaseRollKick": 120,
+    "BaseBackwardsRecoil": 10
   }
 }

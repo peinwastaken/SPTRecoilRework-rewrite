@@ -19,21 +19,16 @@ namespace RecoilReworkClient.Patches
         [PatchPostfix]
         private static void Postfix(NewRecoilShotEffect __instance)
         {
-            try
-            {
-                Player.FirearmController fc = __instance.FirearmController;
-                Player player = fc.GetComponent<Player>();
-                ProceduralWeaponAnimation pwa = player.ProceduralWeaponAnimation;
+            Player.FirearmController fc = __instance.FirearmController;
+            if (fc == null) return;
+            Player player = fc.GetComponent<Player>();
+            if (player == null || !player.IsYourPlayer) return;
+                
+            ProceduralWeaponAnimation pwa = player.ProceduralWeaponAnimation;
 
-                pwa.CrankRecoil = true;
+            pwa.CrankRecoil = true;
 
-                RecoilController.Instance?.RecalculateRecoilForces(player.ProceduralWeaponAnimation, fc.Weapon);
-            }
-            catch (Exception ex)
-            {
-                Plugin.Logger.LogError(ex);
-                throw;
-            }
+            RecoilController.Instance?.RecalculateRecoilForces(player.ProceduralWeaponAnimation, fc.Weapon);
         }
     }
 }

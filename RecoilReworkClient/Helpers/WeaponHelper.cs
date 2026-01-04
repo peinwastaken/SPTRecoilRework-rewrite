@@ -27,6 +27,28 @@ namespace RecoilReworkClient.Helpers
 
         public static bool HasStock(this Weapon weapon)
         {
+            bool isPistol = weapon.IsPistol();
+            bool hasStockSlot = false;
+            
+            foreach (Slot slot in weapon.AllSlots)
+            {
+                hasStockSlot = slot.ID.Contains("mod_stock");
+                break;
+            }
+            
+            // is weapon folded?
+            if (weapon.Folded)
+            {
+                return false;
+            }
+            
+            // assume were using a bullpup
+            if (!isPistol && !hasStockSlot)
+            {
+                return true;
+            }
+            
+            // does weapon have a stock equipped?
             foreach (Mod mod in weapon.Mods)
             {
                 if (mod is StockItemClass)
@@ -34,7 +56,7 @@ namespace RecoilReworkClient.Helpers
                     return true;
                 }
             }
-
+            
             return false;
         }
 

@@ -9,6 +9,7 @@ using RecoilReworkClient.Helpers;
 using RecoilReworkClient.Models;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 using Spring = RecoilReworkClient.Physics.Spring;
 
@@ -19,6 +20,8 @@ namespace RecoilReworkClient.Controllers
         public static RecoilController Instance;
 
         public Player player;
+        public Weapon currentWeapon;
+        public ProceduralWeaponAnimation proceduralWeaponAnimation;
         
         public Spring WeaponKickSpring;
         public Spring WeaponPositionSpring;
@@ -41,6 +44,9 @@ namespace RecoilReworkClient.Controllers
         public float AnglePitchForce = 20f;
         public float AngleYawForce = 10f;
         public float AngleRollForce = 0f;
+        
+        public float AngleSprayPenalty = 0f;
+        public float AngleRecoverySpeed = 8f;
         
         /*
          * x - cam pos right
@@ -83,6 +89,7 @@ namespace RecoilReworkClient.Controllers
 
             Instance = this;
             player = GetComponent<Player>();
+            proceduralWeaponAnimation = player.ProceduralWeaponAnimation;
             
             WeaponKickSpring = new Spring();
             WeaponPositionSpring = new Spring();
@@ -127,15 +134,22 @@ namespace RecoilReworkClient.Controllers
             
             CameraPositionSpring.Update(dt);
             CameraAngleSpring.Update(dt);
+
+            if (!proceduralWeaponAnimation.Shootingg.NewShotRecoil.AutoFireOn)
+            {
+                AngleSprayPenalty = Mathf.Lerp(AngleSprayPenalty, 0f, AngleRecoverySpeed * Time.fixedDeltaTime);
+            }
         }
 
         public void RecalculateRecoilForces(ProceduralWeaponAnimation pwa, Weapon weapon)
         {
+            currentWeapon = weapon;
+            
             CaliberData caliberData = weapon.GetCaliberData();
             float kickMult = weapon.GetKickMultiplier();
             
             bool isPistol = weapon.IsPistol();
-            bool hasStock = weapon.HasStock() && !weapon.Folded;
+            bool hasStock = weapon.HasStock();
             float totalWeight = weapon.TotalWeight;
             
             float verticalKick = caliberData.BaseVerticalKick * kickMult;
@@ -145,6 +159,13 @@ namespace RecoilReworkClient.Controllers
             float verticalAngle = verticalKick * GeneralSettings.WeaponKickToAngleMult.Value;
             float horizontalAngle = horizontalKick * GeneralSettings.WeaponKickToAngleMult.Value;
             
+            float backwardsVertMult = 1f + GeneralSettings.BackwardsToAngleRecoilModifier.Value.x * Mathf.Pow(PositionBackwardsForce, 2f);
+            float backwardsHorMult = 1f + GeneralSettings.BackwardsToAngleRecoilModifier.Value.y * Mathf.Pow(PositionBackwardsForce, 2f);
+            verticalAngle *= backwardsVertMult;
+            horizontalAngle *= backwardsHorMult;
+
+            float backwardsRecoilClamped = Mathf.Clamp(caliberData.BaseBackwardsRecoil, 0f, 4f);
+            
             // set caliber kick and recoil properties
             KickPitchForce = verticalKick;
             KickYawForce = horizontalKick;
@@ -153,13 +174,17 @@ namespace RecoilReworkClient.Controllers
             AnglePitchForce = verticalAngle + verticalAngle * weapon.RecoilDelta;
             AngleYawForce = horizontalAngle + horizontalAngle * weapon.RecoilDelta;
             
-            PositionBackwardsForce = caliberData.BaseBackwardsRecoil;
+            PositionBackwardsForce = backwardsRecoilClamped;
 
             // calculate weapon kick damping
             float baseKickDamping = 0.3f;
             float kickWeightCoefficient = 0.02f;
             float finalKickDamping = baseKickDamping + (totalWeight * kickWeightCoefficient);
             WeaponKickSpring.DampingRatio = finalKickDamping;
+            
+            // calculate weapon spray penalty recovery speed
+            float angleRecoverySpeed = Mathf.Max(8f - Mathf.Exp(GeneralSettings.WeightToPenaltyRecoveryModifier.Value * weapon.TotalWeight), 1f);
+            AngleRecoverySpeed = angleRecoverySpeed;
             
             // other calculations go...
             // ...HERE!
@@ -170,37 +195,54 @@ namespace RecoilReworkClient.Controllers
             {
                 recoilBackPosCamVertOffsetMult = 0f;
                 PositionUpwardsForce = 0f;
+                pwa.CameraSmoothRecoil = GeneralSettings.PistolCameraSnap.Value;
             }
             else
             {
                 recoilBackPosCamVertOffsetMult = -weapon.StockRecoilDelta;
                 PositionUpwardsForce = PositionBackwardsForce * 0.07f;
-            }
+                float cameraSnap = hasStock ? GeneralSettings.RifleCameraSnap.Value : GeneralSettings.RifleCameraSnapNoStock.Value;
+                pwa.CameraSmoothRecoil = cameraSnap;
 
-            // set pwa properties
+                if (!hasStock)
+                {
+                    float caliberEnergy = new Vector2(caliberData.BaseVerticalKick, caliberData.BaseHorizontalKick).magnitude * 0.01f;
+                    PositionUpwardsForce += caliberEnergy * 0.1f;
+                }
+            }
+            
             pwa.CrankRecoil = GeneralSettings.CrankRecoil.Value;
-            pwa.CameraSmoothRecoil = isPistol ? GeneralSettings.PistolCameraSnap.Value : GeneralSettings.RifleCameraSnap.Value;
         }
         
         public void OnShoot()
         {
-            Player.FirearmController fc = player.GetComponent<Player.FirearmController>();
-            Weapon weapon = fc.Weapon;
-            EWeaponClass weaponClass = weapon.GetWeaponClass();
+            ProceduralWeaponAnimation pwa = player.ProceduralWeaponAnimation;
+            EWeaponClass weaponClass = currentWeapon.GetWeaponClass();
+            CaliberData caliberData = currentWeapon.GetCaliberData();
             ConfigEntry<float> kickMult = WeaponHelper.WeaponKickMultipliers[weaponClass];
+            float stancePenaltyMult = PlayerHelper.GetStanceMultiplier(player.Pose);
+            float adsPenaltyMult = pwa.IsAiming ? StanceSettings.AimingPenaltyMult.Value : StanceSettings.HipfirePenaltyMult.Value;
+            float mountPenaltyMult = pwa.IsMountedState || pwa.IsVerticalMounting ? StanceSettings.MountPenaltyMult.Value : 1f;
             
-            bool hasStock = weapon.HasStock() && !weapon.Folded;
+            float ammoRecoilModifier = (currentWeapon.CurrentAmmoTemplate?.ammoRec ?? 0f) * GeneralSettings.AmmoModifierMult.Value;
+            bool hasStock = currentWeapon.HasStock() && !currentWeapon.Folded;
+
+            float modifiedRecoilPitch = Mathf.Max(0f, AnglePitchForce + ammoRecoilModifier);
+            float modifiedRecoilYaw = Mathf.Max(0f, AngleYawForce + ammoRecoilModifier);
+            float backwardsRecoilCamAngMult = 1f + 0.05f * Mathf.Pow(PositionBackwardsForce, 2);
             
             Vector3 recoilKickForce = new Vector3(-KickPitchForce, KickRollForce, KickYawForce);
-            Vector3 recoilAngForce = new Vector3(-AnglePitchForce, AngleRollForce, AngleYawForce);
+            Vector3 recoilAngForce = new Vector3(-modifiedRecoilPitch, AngleRollForce, modifiedRecoilYaw);
             Vector3 recoilPosForce = new Vector3(PositionSidewaysForce, PositionBackwardsForce, -PositionUpwardsForce);
-
+            
+            Vector3 camAngForce = new Vector3(camAng.x, camAng.y, camAng.z) * backwardsRecoilCamAngMult;
+            
             recoilKickForce.z *= Random.Range(-1f, 1f);
             recoilAngForce.z *= Random.Range(-1f, 1f);
             recoilPosForce.x *= Random.Range(-1f, 1f);
 
             recoilKickForce *= kickMult.Value;
-
+            
             if (hasStock)
             {
                 recoilKickForce.x *= 0.7f;
@@ -215,20 +257,26 @@ namespace RecoilReworkClient.Controllers
                 recoilPosForce.y *= 0.7f;
                 recoilPosForce.z *= 0.3f;
             }
-
-            recoilKickForce *= Random.Range(0.9f, 1.1f);
             
-            recoilAngForce.x *= Random.Range(0.9f, 1.8f);
-            recoilAngForce.y *= Random.Range(0.9f, 1.2f);
+            recoilKickForce *= Random.Range(0.9f, 1.1f);
 
-            recoilAngForce *= player.ProceduralWeaponAnimation.IsAiming ? 1f : 2f;
+            float pitchPenalty = 1f + AngleSprayPenalty * GeneralSettings.SprayPenaltyMult.Value.x;
+            float yawPenalty = 1f + AngleSprayPenalty * GeneralSettings.SprayPenaltyMult.Value.y;
+            
+            recoilAngForce *= player.ProceduralWeaponAnimation.IsAiming ? 0.5f : 1f;
+            recoilAngForce.x += recoilAngForce.x * Random.Range(-pitchPenalty, pitchPenalty);
+            recoilAngForce.z += recoilAngForce.z * Random.Range(-yawPenalty, yawPenalty);
             
             WeaponKickSpring.ApplyImpulse(recoilKickForce);
             WeaponPositionSpring.ApplyImpulse(recoilPosForce);
             WeaponAngleSpring.ApplyImpulse(recoilAngForce);
             
             CameraPositionSpring.ApplyImpulse(camPos);
-            CameraAngleSpring.ApplyImpulse(camAng);
+            CameraAngleSpring.ApplyImpulse(camAngForce);
+
+            float caliberEnergy = new Vector2(caliberData.BaseVerticalKick, caliberData.BaseHorizontalKick).magnitude * 0.01f * GeneralSettings.CaliberEnergyToPenaltyModifier.Value;
+            AngleSprayPenalty += (1f - Mathf.Exp(-currentWeapon.TotalWeight * GeneralSettings.WeightToPenaltyModifier.Value)) * caliberEnergy * stancePenaltyMult * adsPenaltyMult * mountPenaltyMult;
+            AngleSprayPenalty = Mathf.Clamp(AngleSprayPenalty, 0f, 2f);
         }
 
         public void ApplyComplexRotation(ProceduralWeaponAnimation pwa)

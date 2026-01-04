@@ -1,0 +1,26 @@
+{
+  "Caliber792x57": { // 7.92x57, 8mm mauser
+    "BaseVerticalKick": 58,
+    "BaseHorizontalKick": 32,
+    "BaseRollKick": 150,
+    "BaseBackwardsRecoil": 7
+  },
+  "Caliber762x67B": { // .300 magnum, axmc / msr
+    "BaseVerticalKick": 65,
+    "BaseHorizontalKick": 40,
+    "BaseRollKick": 150,
+    "BaseBackwardsRecoil": 7
+  },
+  "Caliber86x63": { // 8.6x63, m700xl idc anymore
+    "BaseVerticalKick": 75,
+    "BaseHorizontalKick": 50,
+    "BaseRollKick": 170,
+    "BaseBackwardsRecoil": 8
+  },
+  "Caliber1036x77": { // 408... cayenne?... what is this?
+    "BaseVerticalKick": 80,
+    "BaseHorizontalKick": 60,
+    "BaseRollKick": 170,
+    "BaseBackwardsRecoil": 8
+  }
+}

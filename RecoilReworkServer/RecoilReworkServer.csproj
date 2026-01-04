@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <Folder Include="Resources\" />
+      <Folder Include="Resources\Config\WeaponData\" />
     </ItemGroup>
 
     <ItemGroup>
