@@ -34,7 +34,16 @@ namespace RecoilReworkServer.Routes
                         string json = _jsonUtil?.Serialize(data) ?? "{}";
                         return await ValueTask.FromResult(json);
                     }
-                )
+                ),
+                new RouteAction(
+                    "/recoilrework/weapondata",
+                    async (url, info, sessionId, output) =>
+                    {
+                        Dictionary<string, RecoilModifierData> data = Globals.WeaponData;
+                        string json = _jsonUtil?.Serialize(data) ?? "{}";
+                        return await ValueTask.FromResult(json);
+                    }
+                ),
             ];
         }
     }

@@ -72,6 +72,9 @@ namespace RecoilReworkClient.Controllers
         private FieldInfo _currentLosDeltaAngleField;
         private FieldInfo _losDeltaAngleField;
         private FieldInfo _targetScopeRotationField;
+        private FieldInfo _displacementStrField;
+
+        private float _kickMult = 1f;
 
         private void Awake()
         {
@@ -86,6 +89,7 @@ namespace RecoilReworkClient.Controllers
             _currentLosDeltaAngleField = AccessTools.Field(typeof(ProceduralWeaponAnimation), "_currentLineOfSightDeltaAngle");
             _losDeltaAngleField = AccessTools.Field(typeof(ProceduralWeaponAnimation), "_lineOfSightDeltaAngle");
             _targetScopeRotationField = AccessTools.Field(typeof(ProceduralWeaponAnimation), "_targetScopeRotation");
+            _displacementStrField = AccessTools.Field(typeof(ProceduralWeaponAnimation), "_displacementStr");
 
             Instance = this;
             player = GetComponent<Player>();
@@ -146,15 +150,19 @@ namespace RecoilReworkClient.Controllers
             currentWeapon = weapon;
             
             CaliberData caliberData = weapon.GetCaliberData();
-            float kickMult = weapon.GetKickMultiplier();
+            RecoilModifierData recoilData = weapon.GetModifierData();
+            _kickMult = weapon.GetKickMultiplier();
+            
+            float verticalKickModifier = recoilData.VerticalKickMultiplier;
+            float horizontalKickModifier = recoilData.HorizontalKickMultiplier;
             
             bool isPistol = weapon.IsPistol();
             bool hasStock = weapon.HasStock();
             float totalWeight = weapon.TotalWeight;
             
-            float verticalKick = caliberData.BaseVerticalKick * kickMult;
-            float horizontalKick = caliberData.BaseHorizontalKick * kickMult;
-            float rollKick = caliberData.BaseRollKick * kickMult;
+            float verticalKick = caliberData.BaseVerticalKick * verticalKickModifier;
+            float horizontalKick = caliberData.BaseHorizontalKick * horizontalKickModifier;
+            float rollKick = caliberData.BaseRollKick * _kickMult;
 
             float verticalAngle = verticalKick * GeneralSettings.WeaponKickToAngleMult.Value;
             float horizontalAngle = horizontalKick * GeneralSettings.WeaponKickToAngleMult.Value;
@@ -186,11 +194,15 @@ namespace RecoilReworkClient.Controllers
             float angleRecoverySpeed = Mathf.Max(8f - Mathf.Exp(GeneralSettings.WeightToPenaltyRecoveryModifier.Value * weapon.TotalWeight), 1f);
             AngleRecoverySpeed = angleRecoverySpeed;
             
+            // calculate camera pitch/yaw visual recoil based on weapon backwards recoil amt
+            camAng.x = PositionBackwardsForce * 2f;
+            camAng.y = PositionBackwardsForce * 2f;
+            
             // other calculations go...
             // ...HERE!
             // end calculations.
             
-            // recoil vertical mult based on if weapon is pistol
+            // recoil stuff based on if weapon is pistol or not
             if (isPistol)
             {
                 recoilBackPosCamVertOffsetMult = 0f;
@@ -219,7 +231,8 @@ namespace RecoilReworkClient.Controllers
             ProceduralWeaponAnimation pwa = player.ProceduralWeaponAnimation;
             EWeaponClass weaponClass = currentWeapon.GetWeaponClass();
             CaliberData caliberData = currentWeapon.GetCaliberData();
-            ConfigEntry<float> kickMult = WeaponHelper.WeaponKickMultipliers[weaponClass];
+            ConfigEntry<float> cfgKickMult = WeaponHelper.WeaponKickMultipliers[weaponClass];
+            Vector3 configKickMult = GeneralSettings.FinalWeaponKickMult.Value;
             float stancePenaltyMult = PlayerHelper.GetStanceMultiplier(player.Pose);
             float adsPenaltyMult = pwa.IsAiming ? StanceSettings.AimingPenaltyMult.Value : StanceSettings.HipfirePenaltyMult.Value;
             float mountPenaltyMult = pwa.IsMountedState || pwa.IsVerticalMounting ? StanceSettings.MountPenaltyMult.Value : 1f;
@@ -230,18 +243,20 @@ namespace RecoilReworkClient.Controllers
             float modifiedRecoilPitch = Mathf.Max(0f, AnglePitchForce + ammoRecoilModifier);
             float modifiedRecoilYaw = Mathf.Max(0f, AngleYawForce + ammoRecoilModifier);
             float backwardsRecoilCamAngMult = 1f + 0.05f * Mathf.Pow(PositionBackwardsForce, 2);
+
+            float kickRoll = KickRollForce * Random.Range(0.7f, 1f);
             
-            Vector3 recoilKickForce = new Vector3(-KickPitchForce, KickRollForce, KickYawForce);
+            Vector3 recoilKickForce = new Vector3(-KickPitchForce, kickRoll, KickYawForce);
             Vector3 recoilAngForce = new Vector3(-modifiedRecoilPitch, AngleRollForce, modifiedRecoilYaw);
             Vector3 recoilPosForce = new Vector3(PositionSidewaysForce, PositionBackwardsForce, -PositionUpwardsForce);
             
-            Vector3 camAngForce = new Vector3(camAng.x, camAng.y, camAng.z) * backwardsRecoilCamAngMult;
+            Vector3 camAngForce = new Vector3(Random.Range(-camAng.x, camAng.x), Random.Range(-camAng.y, camAng.y), camAng.z) * backwardsRecoilCamAngMult;
             
             recoilKickForce.z *= Random.Range(-1f, 1f);
             recoilAngForce.z *= Random.Range(-1f, 1f);
             recoilPosForce.x *= Random.Range(-1f, 1f);
 
-            recoilKickForce *= kickMult.Value;
+            recoilKickForce *= cfgKickMult.Value;
             
             if (hasStock)
             {
@@ -266,9 +281,15 @@ namespace RecoilReworkClient.Controllers
             recoilAngForce *= player.ProceduralWeaponAnimation.IsAiming ? 0.5f : 1f;
             recoilAngForce.x += recoilAngForce.x * Random.Range(-pitchPenalty, pitchPenalty);
             recoilAngForce.z += recoilAngForce.z * Random.Range(-yawPenalty, yawPenalty);
+
+            recoilKickForce = Vector3.Scale(recoilKickForce, configKickMult);
+            recoilKickForce.y *= Random.Range(0.5f, 1.5f);
+
+            Vector3 fireportDir = player.ProceduralWeaponAnimation.HandsContainer.Fireport.transform.forward;
+            Vector3 weaponPosForceDir = Vector3.Scale(fireportDir, recoilPosForce).normalized * recoilPosForce.y;
             
-            WeaponKickSpring.ApplyImpulse(recoilKickForce);
-            WeaponPositionSpring.ApplyImpulse(recoilPosForce);
+            WeaponKickSpring.ApplyImpulse(recoilKickForce * _kickMult);
+            WeaponPositionSpring.ApplyImpulse(weaponPosForceDir);
             WeaponAngleSpring.ApplyImpulse(recoilAngForce);
             
             CameraPositionSpring.ApplyImpulse(camPos);
@@ -276,7 +297,7 @@ namespace RecoilReworkClient.Controllers
 
             float caliberEnergy = new Vector2(caliberData.BaseVerticalKick, caliberData.BaseHorizontalKick).magnitude * 0.01f * GeneralSettings.CaliberEnergyToPenaltyModifier.Value;
             AngleSprayPenalty += (1f - Mathf.Exp(-currentWeapon.TotalWeight * GeneralSettings.WeightToPenaltyModifier.Value)) * caliberEnergy * stancePenaltyMult * adsPenaltyMult * mountPenaltyMult;
-            AngleSprayPenalty = Mathf.Clamp(AngleSprayPenalty, 0f, 2f);
+            AngleSprayPenalty = Mathf.Clamp(AngleSprayPenalty, 0f, GeneralSettings.MaxSprayPenaltyMult.Value);
         }
 
         public void ApplyComplexRotation(ProceduralWeaponAnimation pwa)
@@ -286,18 +307,24 @@ namespace RecoilReworkClient.Controllers
             _tempPos = pwa.HandsContainer.WeaponRootAnim.position;
             _tempRot = pwa.HandsContainer.WeaponRootAnim.rotation;
             _localRot = Quaternion.identity;
+
+            float displacementStr = (float)_displacementStrField.GetValue(pwa);
             
             Vector3 handsRot = pwa.HandsContainer.HandsRotation.Get();
+            Vector3 handSway = pwa.HandsContainer.SwaySpring.Value;
             Vector3 pivot = pwa.HandsContainer.WeaponRootAnim.TransformPoint(pwa.HandsContainer.RotationCenter);
 
-            DeferredRotate(pwa, pivot, handsRot);
+            handsRot += displacementStr * (pwa.IsAiming ? pwa.AimingDisplacementStr : 1f) * new Vector3(handSway.x, 0f, handSway.z);
+            handsRot += handSway;
+            
+            DeferredRotateCustomOrder(pwa, pivot, handsRot);
 
             // do recoil kick
             Vector3 recoilPivot = _tempPos + _tempRot * pwa.GetRecoilPivot();
-            DeferredRotate(pwa, recoilPivot, WeaponKickSpring.Position);
+            DeferredRotateCustomOrder(pwa, recoilPivot, WeaponKickSpring.Position);
             
             // do recoil angle
-            DeferredRotate(pwa, recoilPivot, WeaponAngleSpring.Position);
+            DeferredRotateCustomOrder(pwa, recoilPivot, WeaponAngleSpring.Position);
 
             // do recoil position
             _tempPos += _tempRot * WeaponPositionSpring.Position;
@@ -312,7 +339,7 @@ namespace RecoilReworkClient.Controllers
             .SetPositionAndRotation(_tempPos, _tempRot * _scopeRot);
         }
         
-        private void DeferredRotate(ProceduralWeaponAnimation pwa, Vector3 worldPivot, Vector3 rotation)
+        private void DeferredRotateCustomOrder(ProceduralWeaponAnimation pwa, Vector3 worldPivot, Vector3 rotation)
         {
             _localRot = Quaternion.Euler(rotation.x, 0f, rotation.z) * Quaternion.Euler(0f, rotation.y, 0f) * _localRot;
 
@@ -323,6 +350,16 @@ namespace RecoilReworkClient.Controllers
 
             _tempRot = quat1;
             _tempPos = worldPivot + vec1;
+        }
+
+        private void DeferredRotate(ProceduralWeaponAnimation pwa, Vector3 worldPivot, Vector3 rotation)
+        {
+            Quaternion quaternion = Quaternion.Euler(rotation);
+            Quaternion temporaryRotation = quaternion * _tempRot;
+            Vector3 vector = _tempPos - worldPivot;
+            vector = quaternion * vector;
+            _tempRot = temporaryRotation;
+            _tempPos = worldPivot + vector;
         }
         
         private void ApplyAimingAlignment(float dt)

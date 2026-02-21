@@ -2,13 +2,13 @@
   "Caliber784x49": { // .308 me, marlin lever action
     "BaseVerticalKick": 55,
     "BaseHorizontalKick": 30,
-    "BaseRollKick": 120,
+    "BaseRollKick": 200,
     "BaseBackwardsRecoil": 6
   },
   "Caliber93x64": { // 9.3x64mm, tkpd
     "BaseVerticalKick": 60,
     "BaseHorizontalKick": 30,
-    "BaseRollKick": 150,
+    "BaseRollKick": 200,
     "BaseBackwardsRecoil": 7
   }
 }

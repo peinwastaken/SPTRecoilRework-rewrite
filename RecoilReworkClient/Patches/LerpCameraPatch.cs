@@ -31,7 +31,7 @@ namespace RecoilReworkClient.Patches
             Vector3 finalCamAngleOffset = camAngle;
 
             __instance.HandsContainer.CameraTransform.localPosition += finalCamPosOffset;
-            __instance.HandsContainer.CameraTransform.localEulerAngles += finalCamAngleOffset;
+            __instance.HandsContainer.CameraTransform.rotation *= Quaternion.Euler(finalCamAngleOffset);
         }
     }
 }

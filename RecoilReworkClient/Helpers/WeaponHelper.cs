@@ -43,12 +43,12 @@ namespace RecoilReworkClient.Helpers
             }
             
             // assume were using a bullpup
-            if (!isPistol && !hasStockSlot)
+            if (!isPistol && !hasStockSlot && weapon.CompactHandling)
             {
                 return true;
             }
             
-            // does weapon have a stock equipped?
+            // does weapon have a stock or buffer tube equipped?
             foreach (Mod mod in weapon.Mods)
             {
                 if (mod is StockItemClass)
@@ -105,6 +105,13 @@ namespace RecoilReworkClient.Helpers
             Plugin.CaliberData.TryGetValue(weapon.Template.ammoCaliber, out CaliberData caliberData);
             
             return caliberData ?? Plugin.CaliberData["Fallback"];
+        }
+
+        public static RecoilModifierData GetModifierData(this Weapon weapon)
+        {
+            Plugin.RecoilModifierData.TryGetValue(weapon.StringTemplateId, out RecoilModifierData modifierData);
+
+            return modifierData ?? new RecoilModifierData();
         }
 
         public static float GetKickMultiplier(this Weapon weapon)

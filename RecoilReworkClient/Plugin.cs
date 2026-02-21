@@ -16,6 +16,7 @@ namespace RecoilReworkClient
         internal static new ManualLogSource Logger;
 
         public static Dictionary<string, CaliberData> CaliberData;
+        public static Dictionary<string, RecoilModifierData> RecoilModifierData;
 
         private void Awake()
         {
@@ -56,11 +57,15 @@ namespace RecoilReworkClient
         private void FetchData()
         {
             CaliberData = RouteHelper.FetchCaliberData();
-            Plugin.Logger.LogInfo(CaliberData.Count);
+            RecoilModifierData = RouteHelper.FetchModifierData();
+            
+            Logger.LogInfo($"Caliber data count: {CaliberData.Count}");
             foreach (var caliber in CaliberData)
             {
-                Plugin.Logger.LogInfo(caliber.Key);
+                Logger.LogInfo(caliber.Key);
             }
+            
+            Logger.LogInfo($"Recoil modifier data count: {RecoilModifierData.Count}");
         }
     }
 }

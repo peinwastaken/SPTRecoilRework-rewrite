@@ -16,6 +16,8 @@ namespace RecoilReworkClient.Config.Settings
         public static ConfigEntry<float> WeightToPenaltyModifier { get; private set; }
         public static ConfigEntry<float> CaliberEnergyToPenaltyModifier { get; private set; }
         public static ConfigEntry<Vector2> SprayPenaltyMult { get; private set; }
+        public static ConfigEntry<float> MaxSprayPenaltyMult { get; private set; }
+        public static ConfigEntry<Vector3> FinalWeaponKickMult { get; private set; }
 
         public static void Bind(int order, string category, ConfigFile config)
         {
@@ -139,6 +141,28 @@ namespace RecoilReworkClient.Config.Settings
                     "asddsa",
                     null,
                     new ConfigurationManagerAttributes { Order = 940 }
+                )
+            );
+            
+            MaxSprayPenaltyMult = config.Bind(
+                category,
+                "Max Spray Penalty Multiplier",
+                1f,
+                new ConfigDescription(
+                    "asddsa",
+                    null,
+                    new ConfigurationManagerAttributes { Order = 930 }
+                )
+            );
+            
+            FinalWeaponKickMult = config.Bind(
+                category,
+                "Final Weapon Kick Mult",
+                new Vector3(1.0f, 1.0f, 1.0f),
+                new ConfigDescription(
+                    "asddsa",
+                    null,
+                    new ConfigurationManagerAttributes { Order = 920 }
                 )
             );
         }
