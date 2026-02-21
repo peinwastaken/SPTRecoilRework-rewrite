@@ -9,7 +9,6 @@ using RecoilReworkClient.Helpers;
 using RecoilReworkClient.Models;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 using Spring = RecoilReworkClient.Physics.Spring;
 
@@ -75,6 +74,9 @@ namespace RecoilReworkClient.Controllers
         private FieldInfo _displacementStrField;
 
         private float _kickMult = 1f;
+        public bool IsPistol = false;
+        public bool HasStock = false;
+        public bool IsBullpup = false;
 
         private void Awake()
         {
@@ -151,14 +153,16 @@ namespace RecoilReworkClient.Controllers
             
             CaliberData caliberData = weapon.GetCaliberData();
             RecoilModifierData recoilData = weapon.GetModifierData();
+            float totalWeight = weapon.TotalWeight;
+            
             _kickMult = weapon.GetKickMultiplier();
+            
+            IsPistol = weapon.IsPistol();
+            HasStock = weapon.HasStock();
+            IsBullpup = weapon.IsBullpup();
             
             float verticalKickModifier = recoilData.VerticalKickMultiplier;
             float horizontalKickModifier = recoilData.HorizontalKickMultiplier;
-            
-            bool isPistol = weapon.IsPistol();
-            bool hasStock = weapon.HasStock();
-            float totalWeight = weapon.TotalWeight;
             
             float verticalKick = caliberData.BaseVerticalKick * verticalKickModifier;
             float horizontalKick = caliberData.BaseHorizontalKick * horizontalKickModifier;
@@ -181,6 +185,13 @@ namespace RecoilReworkClient.Controllers
 
             AnglePitchForce = verticalAngle + verticalAngle * weapon.RecoilDelta;
             AngleYawForce = horizontalAngle + horizontalAngle * weapon.RecoilDelta;
+
+            // TODO: remove this stupid hack later
+            if (IsBullpup)
+            {
+                AnglePitchForce *= 0.5f;
+                AngleYawForce *= 0.5f;
+            }
             
             PositionBackwardsForce = backwardsRecoilClamped;
 
@@ -203,7 +214,7 @@ namespace RecoilReworkClient.Controllers
             // end calculations.
             
             // recoil stuff based on if weapon is pistol or not
-            if (isPistol)
+            if (IsPistol)
             {
                 recoilBackPosCamVertOffsetMult = 0f;
                 PositionUpwardsForce = 0f;
@@ -213,10 +224,10 @@ namespace RecoilReworkClient.Controllers
             {
                 recoilBackPosCamVertOffsetMult = -weapon.StockRecoilDelta;
                 PositionUpwardsForce = PositionBackwardsForce * 0.07f;
-                float cameraSnap = hasStock ? GeneralSettings.RifleCameraSnap.Value : GeneralSettings.RifleCameraSnapNoStock.Value;
+                float cameraSnap = HasStock ? GeneralSettings.RifleCameraSnap.Value : GeneralSettings.RifleCameraSnapNoStock.Value;
                 pwa.CameraSmoothRecoil = cameraSnap;
 
-                if (!hasStock)
+                if (!HasStock)
                 {
                     float caliberEnergy = new Vector2(caliberData.BaseVerticalKick, caliberData.BaseHorizontalKick).magnitude * 0.01f;
                     PositionUpwardsForce += caliberEnergy * 0.1f;
@@ -238,7 +249,6 @@ namespace RecoilReworkClient.Controllers
             float mountPenaltyMult = pwa.IsMountedState || pwa.IsVerticalMounting ? StanceSettings.MountPenaltyMult.Value : 1f;
             
             float ammoRecoilModifier = (currentWeapon.CurrentAmmoTemplate?.ammoRec ?? 0f) * GeneralSettings.AmmoModifierMult.Value;
-            bool hasStock = currentWeapon.HasStock() && !currentWeapon.Folded;
 
             float modifiedRecoilPitch = Mathf.Max(0f, AnglePitchForce + ammoRecoilModifier);
             float modifiedRecoilYaw = Mathf.Max(0f, AngleYawForce + ammoRecoilModifier);
@@ -258,7 +268,7 @@ namespace RecoilReworkClient.Controllers
 
             recoilKickForce *= cfgKickMult.Value;
             
-            if (hasStock)
+            if (HasStock)
             {
                 recoilKickForce.x *= 0.7f;
                 recoilKickForce.y *= 0.7f;
@@ -271,6 +281,11 @@ namespace RecoilReworkClient.Controllers
                 recoilPosForce.x *= 0.3f;
                 recoilPosForce.y *= 0.7f;
                 recoilPosForce.z *= 0.3f;
+            }
+
+            if (IsPistol)
+            {
+                recoilKickForce.y *= 0.2f;
             }
             
             recoilKickForce *= Random.Range(0.9f, 1.1f);

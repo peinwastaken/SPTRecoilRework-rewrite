@@ -23,7 +23,6 @@ namespace RecoilReworkServer.Helpers
                 if (prop.Value != null)
                 {
                     itemClone.AddToExtensionData(prop.Key, prop.Value);
-                    logger.LogWithColor($"{prop.Key} = {prop.Value}", LogTextColor.Red);
                 }
             }
         }

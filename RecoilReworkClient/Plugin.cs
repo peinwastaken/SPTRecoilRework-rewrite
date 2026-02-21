@@ -45,6 +45,7 @@ namespace RecoilReworkClient
             new ShotEffectorProcessPatch().Enable();
             new PlayerInitPatch().Enable();
             new LerpCameraPatch().Enable();
+            //new ApplyThirdPersonTransformationsPatch().Enable();
         }
 
         private void BindConfigs()

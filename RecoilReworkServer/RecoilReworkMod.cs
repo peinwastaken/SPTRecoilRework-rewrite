@@ -1,6 +1,5 @@
 ﻿using RecoilReworkServer.Helpers;
 using RecoilReworkServer.Models;
-using SPTarkov.Common.Extensions;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
@@ -14,8 +13,8 @@ using Path = System.IO.Path;
 
 namespace RecoilReworkServer
 {
-    [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
-    public class RecoilReworkMod(ISptLogger<RecoilReworkMod> logger, ModHelper modHelper, DatabaseService dbService, ItemHelper itemHelper) : IOnLoad
+    [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 67)]
+    public class RecoilReworkMod(ISptLogger<RecoilReworkMod> logger, ModHelper modHelper, DatabaseService dbService, ItemHelper itemHelper, LoadHelper loadHelper) : IOnLoad
     {
         private string ModPath => modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
         private string ConfigPath => Path.Combine(ModPath, "Config");
@@ -28,7 +27,7 @@ namespace RecoilReworkServer
             LoadWeaponData();
          
             List<string> randomStrings = modHelper.GetJsonDataFromFile<List<string>>(ConfigPath, "randomstrings.jsonc");
-            logger.LogWithColor($"Loaded data for {Globals.CaliberData.Count} calibers. {randomStrings.GetRandom()}", LogTextColor.Magenta);
+            logger.LogWithColor($"Successfully loaded Recoil Rework 2.0! Loaded data for {Globals.CaliberData.Count} calibers and {Globals.WeaponData.Count} weapons. {randomStrings.GetRandom()}", LogTextColor.Magenta);
             
             return Task.CompletedTask;
         }
@@ -36,38 +35,47 @@ namespace RecoilReworkServer
         private void LoadWeaponData()
         {
             var items = dbService.GetItems();
-            
-            List<WeaponData> weaponData = [];
-            List<string> weaponDataFiles = Directory.GetFiles(WeaponDataPath).ToList();
+            var fullData = loadHelper.LoadAllFromDirectory<List<WeaponData>>(WeaponDataPath);
 
-            foreach (string file in weaponDataFiles)
+            foreach (var weaponData in fullData)
             {
-                string extension = Path.GetExtension(file);
-
-                if (extension != ".json" && extension != ".jsonc")
+                foreach (var data in weaponData)
                 {
-                    continue;
-                }
-
-                WeaponData data = modHelper.GetJsonDataFromFile<WeaponData>(WeaponDataPath, file);
-
-                if (!data.WeaponId.IsEmpty)
-                {
-                    itemHelper.AddRecoilModifierData(items[data.WeaponId], data.RecoilModifiers);
-                    Globals.WeaponData.Add(data.WeaponId, data.RecoilModifiers);
-                    
-                    logger.LogWithColor($"Loaded data for {data.WeaponId}", LogTextColor.Magenta);
-                }
-                
-                if (data.WeaponIds.Count != 0)
-                {
-                    foreach (MongoId id in data.WeaponIds)
+                    if (!data.WeaponId.IsEmpty)
                     {
-                        itemHelper.AddRecoilModifierData(items[id], data.RecoilModifiers);
-                        Globals.WeaponData.Add(id,  data.RecoilModifiers);
+                        if (items.TryGetValue(data.WeaponId, out var value))
+                        {
+                            itemHelper.AddRecoilModifierData(value, data.RecoilModifiers);
+                            itemHelper.UpdateBaseItem(value, data.OverrideProperties);
+                            Globals.WeaponData.Add(data.WeaponId, data.RecoilModifiers);
+                    
+                            logger.LogWithColor($"Loaded weapon data for {data.WeaponId} :-)", LogTextColor.Green);
+                        }
+                        else
+                        {
+                            logger.LogWithColor($"Failed to find weapon with {data.WeaponId}. This is usually fine to ignore.", LogTextColor.Yellow);
+                        }
+                        return;
+                    }
+                
+                    if (data.WeaponIds.Count != 0)
+                    {
+                        foreach (MongoId id in data.WeaponIds)
+                        {
+                            if (items.TryGetValue(id, out var value))
+                            {
+                                itemHelper.AddRecoilModifierData(items[id], data.RecoilModifiers);
+                                itemHelper.UpdateBaseItem(items[id], data.OverrideProperties);
+                                Globals.WeaponData.Add(id,  data.RecoilModifiers);
                         
-                        logger.LogWithColor($"Loaded override properties for {id}", LogTextColor.Magenta);
-                    }   
+                                logger.LogWithColor($"Loaded weapon data for {id} :-)", LogTextColor.Green);
+                            }
+                            else
+                            {
+                                logger.LogWithColor($"Failed to find weapon with {id}. This is usually fine to ignore.", LogTextColor.Yellow);
+                            }
+                        }
+                    }
                 }
             }
         }

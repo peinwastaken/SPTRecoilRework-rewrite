@@ -1,0 +1,13 @@
+[
+    {
+        "weaponIds": [
+            "5fb64bc92b1b027b1f50bcf2",
+            "5fc3f2d5900b1d5091531e57"
+        ],
+        "weaponRecoilModifiers": {
+            "VerticalKickMultiplier": 0.3,
+            "HorizontalKickMultiplier": 0.25
+        },
+        "overrideProperties": {}
+    }
+]
