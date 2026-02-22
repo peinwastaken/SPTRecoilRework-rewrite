@@ -7,6 +7,7 @@ using RecoilReworkClient.Config.Settings;
 using RecoilReworkClient.Enum;
 using RecoilReworkClient.Helpers;
 using RecoilReworkClient.Models;
+using System;
 using System.Reflection;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -78,6 +79,8 @@ namespace RecoilReworkClient.Controllers
         public bool HasStock = false;
         public bool IsBullpup = false;
 
+        private Texture2D _debugOverlayBg;
+
         private void Awake()
         {
             if (Instance != null)
@@ -128,6 +131,10 @@ namespace RecoilReworkClient.Controllers
             CameraPositionSpring.Frequency = 5f;
             CameraPositionSpring.Mass = 1f;
             CameraPositionSpring.Speed = 1f;
+
+            _debugOverlayBg = new Texture2D(1, 1);
+            _debugOverlayBg.SetPixel(0, 0, new Color(0f, 0f, 0f, 0.5f));
+            _debugOverlayBg.Apply();
         }
 
         private void Update()
@@ -183,15 +190,16 @@ namespace RecoilReworkClient.Controllers
             KickYawForce = horizontalKick;
             KickRollForce = rollKick;
 
+            // TODO: figure out a better way to handle recoildelta for attachments
+            // probably use just foregrips, stocks and muzzle brakes to calculate recoil delta
+            /*
             AnglePitchForce = verticalAngle + verticalAngle * weapon.RecoilDelta;
             AngleYawForce = horizontalAngle + horizontalAngle * weapon.RecoilDelta;
+            */
 
-            // TODO: remove this stupid hack later
-            if (IsBullpup)
-            {
-                AnglePitchForce *= 0.5f;
-                AngleYawForce *= 0.5f;
-            }
+            float recoilReduction = weapon.GetRecoilReduction();
+            AnglePitchForce = verticalAngle * Mathf.Clamp01(1f + recoilReduction);
+            AngleYawForce = horizontalAngle * Mathf.Clamp01(1f + recoilReduction);
             
             PositionBackwardsForce = backwardsRecoilClamped;
 
@@ -398,6 +406,54 @@ namespace RecoilReworkClient.Controllers
                     DeferredRotate(pwa, pwa.HandsContainer.Fireport.position, _tempRot * new Vector3(angle, 0f, 0f));
                 }
             }
+        }
+        
+        private void OnGUI()
+        {
+            GUIStyle style = new GUIStyle(GUI.skin.label)
+            {
+                fontSize = 20,
+                normal = {
+                    textColor = Color.white,
+                    background = _debugOverlayBg
+                },
+                
+            };
+
+            GUIStyle header = new GUIStyle(GUI.skin.label)
+            {
+                fontSize = 20,
+                fontStyle = FontStyle.Bold,
+                normal = { textColor = Color.white }
+            };
+
+            GUIStyle divider = new GUIStyle(GUI.skin.box)
+            {
+                normal = { background = Texture2D.whiteTexture },
+                margin = new RectOffset(0, 0, 1, 1),
+                fixedHeight = 1,
+            };
+            
+            GUILayout.BeginVertical(style);
+            GUILayout.Label("Weapon parameters", header);
+            GUILayout.Label($"Kick Pitch Force: {KickPitchForce:F2}");
+            GUILayout.Label($"Kick Yaw Force: {KickYawForce:F2}");
+            GUILayout.Label($"Kick Roll Force: {KickRollForce:F2}");
+            GUILayout.Box(GUIContent.none, divider, GUILayout.ExpandWidth(true));
+            GUILayout.Label($"Angle Pitch Force: {AnglePitchForce:F2}");
+            GUILayout.Label($"Angle Pitch Force: {AngleYawForce:F2}");
+            GUILayout.Label($"Angle Pitch Force: {AngleRollForce:F2}");
+            GUILayout.Box(GUIContent.none, divider, GUILayout.ExpandWidth(true));
+            GUILayout.Label($"Is Pistol: {IsPistol}");
+            GUILayout.Label($"Has Stock: {HasStock}");
+            GUILayout.Label($"Is Bullpup: {IsBullpup}");
+            
+            GUILayout.Label("Recoil parameters", header);
+            GUILayout.Label($"Spray Penalty: {AngleSprayPenalty:F2}");
+            GUILayout.Label($"Penalty Recovery Speed: {AngleRecoverySpeed:F2}");
+            GUILayout.EndVertical();
+            
+            Rect rect = GUILayoutUtility.GetLastRect();
         }
     }
 }

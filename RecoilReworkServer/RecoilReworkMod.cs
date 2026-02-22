@@ -5,29 +5,27 @@ using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Logging;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
-using System.Reflection;
 using ItemHelper = RecoilReworkServer.Helpers.ItemHelper;
-using Path = System.IO.Path;
 
 namespace RecoilReworkServer
 {
     [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 67)]
-    public class RecoilReworkMod(ISptLogger<RecoilReworkMod> logger, ModHelper modHelper, DatabaseService dbService, ItemHelper itemHelper, LoadHelper loadHelper) : IOnLoad
+    public class RecoilReworkMod(
+        ModHelper modHelper,
+        DatabaseService dbService,
+        ItemHelper itemHelper,
+        LoadHelper loadHelper,
+        ModPaths modPaths,
+        DebugLogger logger) : IOnLoad
     {
-        private string ModPath => modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
-        private string ConfigPath => Path.Combine(ModPath, "Config");
-        private string CustomCaliberDataPath => Path.Combine(ConfigPath, "CustomCaliberData");
-        private string WeaponDataPath => Path.Combine(ConfigPath, "WeaponData");
-        
         public Task OnLoad()
         {
             LoadCaliberData();
             LoadWeaponData();
          
-            List<string> randomStrings = modHelper.GetJsonDataFromFile<List<string>>(ConfigPath, "randomstrings.jsonc");
-            logger.LogWithColor($"Successfully loaded Recoil Rework 2.0! Loaded data for {Globals.CaliberData.Count} calibers and {Globals.WeaponData.Count} weapons. {randomStrings.GetRandom()}", LogTextColor.Magenta);
+            List<string> randomStrings = modHelper.GetJsonDataFromFile<List<string>>(modPaths.ConfigPath, "randomstrings.jsonc");
+            logger.Log($"Successfully loaded Recoil Rework! Loaded data for {Globals.GlobalData.CaliberData.Count} calibers and {Globals.GlobalData.WeaponData.Count} weapons. {randomStrings.GetRandom()}", LogTextColor.Magenta, true);
             
             return Task.CompletedTask;
         }
@@ -35,7 +33,7 @@ namespace RecoilReworkServer
         private void LoadWeaponData()
         {
             var items = dbService.GetItems();
-            var fullData = loadHelper.LoadAllFromDirectory<List<WeaponData>>(WeaponDataPath);
+            var fullData = loadHelper.LoadAllFromDirectory<List<WeaponData>>(modPaths.WeaponDataPath);
 
             foreach (var weaponData in fullData)
             {
@@ -47,13 +45,13 @@ namespace RecoilReworkServer
                         {
                             itemHelper.AddRecoilModifierData(value, data.RecoilModifiers);
                             itemHelper.UpdateBaseItem(value, data.OverrideProperties);
-                            Globals.WeaponData.Add(data.WeaponId, data.RecoilModifiers);
+                            Globals.GlobalData.WeaponData.Add(data.WeaponId, data.RecoilModifiers);
                     
-                            logger.LogWithColor($"Loaded weapon data for {data.WeaponId} :-)", LogTextColor.Green);
+                            logger.LogInfo($"Loaded weapon data for {data.WeaponId} :-)");
                         }
                         else
                         {
-                            logger.LogWithColor($"Failed to find weapon with {data.WeaponId}. This is usually fine to ignore.", LogTextColor.Yellow);
+                            logger.LogWarning($"Failed to find weapon {data.WeaponId}. Can be ignored and won't cause any issues. Just a heads up.");
                         }
                         return;
                     }
@@ -66,13 +64,13 @@ namespace RecoilReworkServer
                             {
                                 itemHelper.AddRecoilModifierData(items[id], data.RecoilModifiers);
                                 itemHelper.UpdateBaseItem(items[id], data.OverrideProperties);
-                                Globals.WeaponData.Add(id,  data.RecoilModifiers);
+                                Globals.GlobalData.WeaponData.Add(id,  data.RecoilModifiers);
                         
-                                logger.LogWithColor($"Loaded weapon data for {id} :-)", LogTextColor.Green);
+                                logger.LogInfo($"Loaded weapon data for {id} :-)");
                             }
                             else
                             {
-                                logger.LogWithColor($"Failed to find weapon with {id}. This is usually fine to ignore.", LogTextColor.Yellow);
+                                logger.LogWarning($"Failed to find weapon {id}. Can be ignored and won't cause any issues. Just a heads up.");
                             }
                         }
                     }
@@ -82,26 +80,19 @@ namespace RecoilReworkServer
 
         private void LoadCaliberData()
         {
-            Dictionary<string, CaliberData> caliberData = modHelper.GetJsonDataFromFile<Dictionary<string, CaliberData>>(ConfigPath, "caliberdata.jsonc");
-            List<string> customDataFiles = Directory.GetFiles(CustomCaliberDataPath).ToList();
+            List<Dictionary<string, CaliberData>> allCaliberData = loadHelper.LoadAllFromDirectory<Dictionary<string, CaliberData>>(modPaths.CaliberDataPath);
+            Dictionary<string, CaliberData> loadedData = [];
 
-            foreach (string file in customDataFiles)
+            foreach (var caliberData in allCaliberData)
             {
-                string extension = Path.GetExtension(file);
-
-                if (extension != ".json" && extension != ".jsonc")
+                foreach (var data in caliberData)
                 {
-                    continue;
-                }
-
-                Dictionary<string, CaliberData> customCaliberData = modHelper.GetJsonDataFromFile<Dictionary<string, CaliberData>>(CustomCaliberDataPath, file);
-                foreach (var data in customCaliberData)
-                {
-                    caliberData.Add(data.Key, data.Value);
+                    logger.LogInfo($"[Recoil Rework] Loaded caliber data for {data.Key} :-)");
+                    loadedData.Add(data.Key, data.Value);
                 }
             }
 
-            Globals.CaliberData = caliberData;
+            Globals.GlobalData.CaliberData = loadedData;
         }
     }
 }

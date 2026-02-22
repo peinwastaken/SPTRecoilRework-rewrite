@@ -6,15 +6,13 @@ using System.Text.Json;
 namespace RecoilReworkServer.Helpers
 {
     [Injectable]
-    public class LoadHelper(SptLogger<LoadHelper> logger, ModHelper modHelper)
+    public class LoadHelper(ModHelper modHelper)
     {
         public List<T> LoadAllFromDirectory<T>(string path) where T : class
         {
             List<T> list = [];
             string[] directories = Directory.GetDirectories(path);
             string[] files = Directory.GetFiles(path);
-            
-            logger.LogWithColor($"Loading {files.Length} files from directory {new DirectoryInfo(path).Name} with type {typeof(T).Name}");
 
             foreach (string directory in directories)
             {

@@ -30,7 +30,7 @@ namespace RecoilReworkServer.Routes
                     "/recoilrework/caliberdata",
                     async (url, info, sessionId, output) =>
                     {
-                        Dictionary<string, CaliberData> data = Globals.CaliberData;
+                        Dictionary<string, CaliberData> data = Globals.GlobalData.CaliberData;
                         string json = _jsonUtil?.Serialize(data) ?? "{}";
                         return await ValueTask.FromResult(json);
                     }
@@ -39,7 +39,7 @@ namespace RecoilReworkServer.Routes
                     "/recoilrework/weapondata",
                     async (url, info, sessionId, output) =>
                     {
-                        Dictionary<string, RecoilModifierData> data = Globals.WeaponData;
+                        Dictionary<string, RecoilModifierData> data = Globals.GlobalData.WeaponData;
                         string json = _jsonUtil?.Serialize(data) ?? "{}";
                         return await ValueTask.FromResult(json);
                     }

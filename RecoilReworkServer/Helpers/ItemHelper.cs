@@ -10,7 +10,7 @@ using System.Runtime.InteropServices.JavaScript;
 namespace RecoilReworkServer.Helpers
 {
     [Injectable]
-    public class ItemHelper(SptLogger<ItemHelper> logger)
+    public class ItemHelper()
     {
         public void AddRecoilModifierData(TemplateItem itemClone, RecoilModifierData? recoilModifierData)
         {

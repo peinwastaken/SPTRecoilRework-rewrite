@@ -4,6 +4,7 @@ using EFT.InventoryLogic;
 using RecoilReworkClient.Config.Settings;
 using RecoilReworkClient.Enum;
 using RecoilReworkClient.Models;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,6 +43,14 @@ namespace RecoilReworkClient.Helpers
             "67f425638b8cbfdc0cd1b5f2", // armory x95 9mm,
             "6962f22fddc6698c6309b620", // armory f2000
             "6969867592a994a633084f70" // armory f2000 fde
+        ];
+
+        private static Type[] _recoilAffectingModTypes =
+        [
+            typeof(FlashHiderItemClass),
+            typeof(MuzzleComboItemClass),
+            typeof(SilencerItemClass),
+            typeof(ForegripItemClass)
         ];
         
 
@@ -145,6 +154,28 @@ namespace RecoilReworkClient.Helpers
         public static bool IsBullpup(this Weapon weapon)
         {
             return BullpupIds.ContainsKeyword(weapon.StringTemplateId);
+        }
+
+        public static float GetRecoilReduction(this Weapon weapon)
+        {
+            float recoilReduction = 0f;
+
+            foreach (Slot slot in weapon.AllSlots)
+            {
+                Item containedItem = slot.ContainedItem;
+                if (containedItem == null) continue;
+                
+                Type slotItemType = containedItem.GetType();
+                bool slotHasRecoilReducingItem = _recoilAffectingModTypes.IndexOf(slotItemType) >= 0;
+                
+                if (slotHasRecoilReducingItem)
+                {
+                    Mod mod = slot.ContainedItem as Mod;
+                    recoilReduction += mod.Recoil;
+                }
+            }
+            
+            return recoilReduction * 2 / 100f;
         }
     } 
 }
