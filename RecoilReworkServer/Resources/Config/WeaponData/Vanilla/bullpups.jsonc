@@ -11,6 +11,8 @@
         ],
         "weaponRecoilModifiers": {},
         "overrideProperties": {
+            // what kind of recoil pivot is this?
+            // this is a really good recoil pivot for your tarkov gun. feels good to shoot. tell your friend to use it too.
             "RecoilCenter": {
                 "x": 0.05,
                 "y": -0.3,

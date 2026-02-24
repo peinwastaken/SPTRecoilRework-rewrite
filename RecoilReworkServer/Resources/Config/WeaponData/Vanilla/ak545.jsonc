@@ -1,0 +1,24 @@
+[
+    {
+        "weaponIds": [
+            "6499849fc93611967b034949",
+            "5bf3e03b0db834001d2c4a9c",
+            "5ac4cd105acfc40016339859",
+            "5ac66d9b5acfc4001633997a",
+            "5bf3e0490db83400196199af",
+            "57dc2fa62459775949412633",
+            "583990e32459771419544dd2",
+            "5839a40f24597726f856b511",
+            "5ab8e9fcd8ce870019439434",
+            "5beed0f50db834001c062b12"
+        ],
+        "weaponRecoilModifiers": {},
+        "overrideProperties": {
+            "RecoilCenter": {
+                "x": 0.05,
+                "y": -0.3,
+                "z": -0.01
+            }
+        }
+    }
+]

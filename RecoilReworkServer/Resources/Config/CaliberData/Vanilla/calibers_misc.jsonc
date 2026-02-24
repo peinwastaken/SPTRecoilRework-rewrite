@@ -1,0 +1,14 @@
+{
+    "Caliber20x1mm": { // 20x1, blicky
+        "BaseVerticalKick": 5,
+        "BaseHorizontalKick": 5,
+        "BaseRollKick": 5,
+        "BaseBackwardsRecoil": 0
+    },
+    "Caliber26x75": { // flare cartridge, flare gun
+        "BaseVerticalKick": 10,
+        "BaseHorizontalKick": 10,
+        "BaseRollKick": 25,
+        "BaseBackwardsRecoil": 0.5
+    }
+}

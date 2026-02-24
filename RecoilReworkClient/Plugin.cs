@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace RecoilReworkClient
 {
-    [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
+    [BepInPlugin("com.pein.recoilrework2", "Recoil Rework", "2.0.0")]
     public class Plugin : BaseUnityPlugin
     {
         internal static new ManualLogSource Logger;
@@ -50,9 +50,12 @@ namespace RecoilReworkClient
 
         private void BindConfigs()
         {
-            GeneralSettings.Bind(0, Category.General, Config);
-            WeaponKickSettings.Bind(1, Category.WeaponKick, Config);
-            StanceSettings.Bind(2, Category.Stance, Config);
+            DebugSettings.Bind(0, Category.Debug, Config);
+            GeneralSettings.Bind(1, Category.General, Config);
+            BaseRecoilSettings.Bind(2, Category.RecoilParameters, Config);
+            OnShotSettings.Bind(3, Category.ShotBehavior, Config);
+            SprayPenaltySettings.Bind(4, Category.SprayPenalty, Config);
+            StanceSettings.Bind(5, Category.Stance, Config);
         }
 
         private void FetchData()

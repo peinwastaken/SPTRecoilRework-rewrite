@@ -12,20 +12,6 @@ namespace RecoilReworkClient.Helpers
 {
     public static class WeaponHelper
     {
-        public static Dictionary<EWeaponClass, ConfigEntry<float>> WeaponKickMultipliers = new Dictionary<EWeaponClass, ConfigEntry<float>>
-        {
-            {EWeaponClass.AssaultCarbine, WeaponKickSettings.AssaultCarbineKick},
-            {EWeaponClass.AssaultRifle, WeaponKickSettings.AssaultRifleKick},
-            {EWeaponClass.Pistol, WeaponKickSettings.PistolKick},
-            {EWeaponClass.Shotgun, WeaponKickSettings.ShotgunKick},
-            {EWeaponClass.MachineGun, WeaponKickSettings.MachineGunKick},
-            {EWeaponClass.SubMachineGun, WeaponKickSettings.SubMachineGunKick},
-            {EWeaponClass.SniperRifle, WeaponKickSettings.SniperRifleKick},
-            {EWeaponClass.MarksmanRifle, WeaponKickSettings.MarksmanRifleKick},
-            {EWeaponClass.GrenadeLauncher, WeaponKickSettings.GrenadeLauncherKick},
-            {EWeaponClass.SpecialWeapon, WeaponKickSettings.SpecialWeaponKick},
-        };
-
         public static string[] BullpupIds =
         [
             "5f2a9575926fd9352339381f", // rfb
@@ -141,14 +127,6 @@ namespace RecoilReworkClient.Helpers
             Plugin.RecoilModifierData.TryGetValue(weapon.StringTemplateId, out RecoilModifierData modifierData);
 
             return modifierData ?? new RecoilModifierData();
-        }
-
-        public static float GetKickMultiplier(this Weapon weapon)
-        {
-            EWeaponClass weaponClass = weapon.GetWeaponClass();
-            WeaponKickMultipliers.TryGetValue(weaponClass, out ConfigEntry<float> kickMult);
-            
-            return kickMult?.Value ?? 1f;
         }
 
         public static bool IsBullpup(this Weapon weapon)

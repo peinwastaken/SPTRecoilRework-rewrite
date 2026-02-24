@@ -2,10 +2,13 @@
 {
     public class Category
     {
+        public static string Debug = "Debug";
         public static string General = "General";
-        public static string WeaponKick = "Weapon Kick";
-        public static string Stance = "Stance";
+        public static string RecoilParameters = "Base Recoil";
+        public static string ShotBehavior = "Firing Behavior";
+        public static string SprayPenalty = "Spray Penalty";
+        public static string Stance = "Stance Multipliers";
 
-        public static string Format(int order, string category) => $"{order.ToString("D2")}. {category}";
+        public static string Format(int order, string category) => $"{order:D2}. {category}";
     }
 }

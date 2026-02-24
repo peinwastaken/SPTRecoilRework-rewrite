@@ -18,7 +18,7 @@ namespace RecoilReworkClient.Config.Settings
 
             StandPenaltyMult = config.Bind(
                 category,
-                "Standing Spray Penalty Multiplier",
+                "Standing spray penalty multiplier",
                 1f,
                 new ConfigDescription(
                     "asddsa",
@@ -29,7 +29,7 @@ namespace RecoilReworkClient.Config.Settings
             
             CrouchPenaltyMult = config.Bind(
                 category,
-                "Crouching Spray Penalty Multiplier",
+                "Crouching spray penalty multiplier",
                 0.5f,
                 new ConfigDescription(
                     "asddsa",
@@ -40,7 +40,7 @@ namespace RecoilReworkClient.Config.Settings
             
             PronePenaltyMult = config.Bind(
                 category,
-                "Prone Spray Penalty Multiplier",
+                "Prone spray penalty multiplier",
                 0.2f,
                 new ConfigDescription(
                     "asddsa",
@@ -51,7 +51,7 @@ namespace RecoilReworkClient.Config.Settings
             
             MountPenaltyMult = config.Bind(
                 category,
-                "Mounted Spray Penalty Multiplier",
+                "Mounted spray penalty multiplier",
                 0.5f,
                 new ConfigDescription(
                     "asddsa",
@@ -62,7 +62,7 @@ namespace RecoilReworkClient.Config.Settings
             
             AimingPenaltyMult = config.Bind(
                 category,
-                "Aiming Spray Penalty Multiplier",
+                "Aiming spray penalty multiplier",
                 1f,
                 new ConfigDescription(
                     "asddsa",
@@ -73,7 +73,7 @@ namespace RecoilReworkClient.Config.Settings
             
             HipfirePenaltyMult = config.Bind(
                 category,
-                "Hipfire Spray Penalty Multiplier",
+                "Hipfire (point.... fire...? who cares) spray penalty multiplier",
                 2f,
                 new ConfigDescription(
                     "asddsa",
