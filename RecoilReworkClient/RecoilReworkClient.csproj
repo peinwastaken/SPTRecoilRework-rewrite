@@ -62,20 +62,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="RecoilReworkClient.csproj.user" />
+        <Folder Include="Resources\" />
     </ItemGroup>
+    
+    <PropertyGroup>
+        <SPTModType>Client</SPTModType>
+    </PropertyGroup>
 
-    <Target Name="CopyToSPT" AfterTargets="AfterBuild" Condition="'$(SPTPath)' != ''">
-        <PropertyGroup>
-            <ModsDirectoryPath>$(SPTPath)\BepInEx\plugins\$(MSBuildProjectName)</ModsDirectoryPath>
-        </PropertyGroup>
-
-        <Message Importance="high" Text="Copying mods to $(ModsDirectoryPath)" />
-        <ItemGroup>
-            <FilesToCopy Include="$(OutputPath)$(TargetName)$(TargetExt)" />
-            <FilesToCopy Include="$(OutputPath)$(TargetName).pdb" />
-        </ItemGroup>
-        <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(ModsDirectoryPath)\%(RecursiveDir)" ContinueOnError="false" />
-        <Message Importance="high" Text="Files copied" />
-    </Target>
+    <PropertyGroup>
+        <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+    </PropertyGroup>
 </Project>

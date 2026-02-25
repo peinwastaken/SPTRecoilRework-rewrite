@@ -1,0 +1,61 @@
+<Project>
+    <ItemGroup>
+        <ModFiles Include="$(TargetDir)$(TargetName).dll"/>
+        <ModFiles Include="$(TargetDir)$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb') and '$(Configuration)'=='Debug'"/>
+        <ModFiles Include="Resources\**\*"/>
+    </ItemGroup>
+    
+    <Target Name="CreateReleaseFolder" BeforeTargets="PostBuildEvent" Condition="!Exists('$(ReleaseRoot)') and $(Configuration)=='Release'" >
+        <Message Text="Creating release folder at $(ReleaseRoot)" Importance="high"/>
+        <MakeDir Directories="$(ReleaseRoot)" />
+    </Target>
+
+    <PropertyGroup>
+        <IsClientMod Condition="$(MSBuildProjectName.Contains('Client')) or $(SPTModType)=='Client'">true</IsClientMod>
+        <IsServerMod Condition="$(MSBuildProjectName.Contains('Server')) or $(SPTModType)=='Server'">true</IsServerMod>
+    </PropertyGroup>
+    
+    <Target Name="CopyClientFiles" AfterTargets="PostBuildEvent" Condition="$(IsClientMod)=='true'">
+        <!-- copy client files to spt -->
+        <Message Text="Copying client mod to $(ClientModsDir)" Importance="high"/>
+        <Copy
+            SourceFiles="@(ModFiles)"
+            DestinationFolder="$(ClientModsDir)\%(RecursiveDir)"
+            ContinueOnError="false"
+        />
+
+        <!-- copy client files to release -->
+        <Message Text="Copying client mod to $(ReleaseRoot)" Importance="high"/>
+        <Copy
+            SourceFiles="@(ModFiles)"
+            DestinationFolder="$(ReleaseRoot)\$(ClientFolder)\%(RecursiveDir)"
+            Condition="$(Configuration)=='Release'"
+            ContinueOnError="false"
+        />
+
+        <!-- hooray! -->
+        <Message Text="Successfully copied client mod!" Importance="high"/>
+    </Target>
+
+    <Target Name="CopyServerFiles" AfterTargets="PostBuildEvent" Condition="$(IsServerMod)=='true'">
+        <!-- copy server files to spt -->
+        <Message Text="Copying server mod to $(ServerModsDir)" Importance="high"/>
+        <Copy
+            SourceFiles="@(ModFiles)"
+            DestinationFolder="$(ServerModsDir)\%(RecursiveDir)"
+            ContinueOnError="false"
+        />
+
+        <!-- copy server files to release -->
+        <Message Text="Copying server mod to $(ReleaseRoot)" Importance="high"/>
+        <Copy
+            SourceFiles="@(ModFiles)"
+            DestinationFolder="$(ReleaseRoot)\$(ServerFolder)\%(RecursiveDir)"
+            Condition="$(Configuration)=='Release'"
+            ContinueOnError="false"
+        />
+
+        <!-- hooray! -->
+        <Message Text="Successfully copied server mod!" Importance="high"/>
+    </Target>
+</Project>
