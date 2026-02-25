@@ -87,12 +87,6 @@ namespace RecoilReworkClient.Controllers
         
         public void ApplyComplexRotation(ProceduralWeaponAnimation pwa)
         {
-            if (IsLeftStance)
-            {
-                Plugin.Logger.LogWarning($"IS LEFT STANCE: {Player.name}");
-            }
-            
-            // TODO: asjidosajidsioa
             Vector3 posOffset = LeftStancePositionOffset;
             posOffset.Scale(LeftStancePositionOffsetMult);
 

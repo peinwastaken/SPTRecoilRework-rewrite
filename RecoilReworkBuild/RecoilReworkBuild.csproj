@@ -4,9 +4,23 @@
         <TargetFramework>netstandard2.1</TargetFramework>
     </PropertyGroup>
 
-    <Target Name="PackageAfterBuild" AfterTargets="AfterBuild">
-        <Message Importance="high" Text="asdsdsa" />
-        <Exec Command="$(SolutionDir)bundle-release.bat $(SolutionDir)\SPTRecoilRework.7z $(SolutionDir)\Release" />
+    <Target Name="PackageAfterBuild" AfterTargets="AfterBuild" Condition="Exists('$(ReleaseRoot)') and $(Configuration)=='Release'">
+        <!-- create temporary release folder -->
+        <MakeDir Directories="$(ReleaseRoot)" />
+        
+        <!-- delete existing release zip -->
+        <Delete Files="$(ReleaseDestination)" Condition="Exists('$(ReleaseDestination)')" />
+        
+        <!-- zip everything from Release/ folder -->
+        <ZipDirectory DestinationFile="$(ReleaseDestination)" SourceDirectory="$(ReleaseRoot)" />
+        
+        <Message Text="Successfully created build! $(ReleaseDestination)"/>
+    </Target>
+    
+    <Target Name="DeleteReleaseFolder" AfterTargets="PackageAfterBuild" Condition="$(DeleteUnarchivedRelease)=='true'">
+        <Message Text="Deleting temporary release folder..." Importance="high" />
+        
+        <RemoveDir Directories="$(ReleaseRoot)" />
     </Target>
 
     <PropertyGroup>

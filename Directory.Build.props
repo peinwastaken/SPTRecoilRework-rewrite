@@ -9,6 +9,9 @@
         <ClientModsDir>$(SPTPath)\$(ClientFolder)</ClientModsDir>
         <ServerModsDir>$(SPTPath)\$(ServerFolder)</ServerModsDir>
         
-        <ReleaseRoot>$(SolutionDir)\Release</ReleaseRoot>
+        <DeleteUnarchivedRelease>true</DeleteUnarchivedRelease>
+        <ReleaseArchiveExtension>.7z</ReleaseArchiveExtension>
+        <ReleaseRoot>$(SolutionDir)Release</ReleaseRoot>
+        <ReleaseDestination>$(SolutionDir)\$(SolutionName)$(ReleaseArchiveExtension)</ReleaseDestination>
     </PropertyGroup>
 </Project>

@@ -4,11 +4,6 @@
         <ModFiles Include="$(TargetDir)$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb') and '$(Configuration)'=='Debug'"/>
         <ModFiles Include="Resources\**\*"/>
     </ItemGroup>
-    
-    <Target Name="CreateReleaseFolder" BeforeTargets="Build" Condition="!Exists('$(ReleaseRoot)') and $(Configuration)=='Release'" >
-        <Message Text="Creating release folder at $(ReleaseRoot)" Importance="high"/>
-        <MakeDir Directories="$(ReleaseRoot)" />
-    </Target>
 
     <PropertyGroup>
         <IsClientMod Condition="$(MSBuildProjectName.Contains('Client')) or $(SPTModType)=='Client'">true</IsClientMod>
