@@ -1,17 +1,20 @@
 {
-    "Caliber30x29": { // vog-30, ubgl (ak)
+    "Caliber30x29": {
+        // vog-30, ubgl (ak)
         "BaseVerticalKick": 50,
         "BaseHorizontalKick": 25,
         "BaseRollKick": 200,
         "BaseBackwardsRecoil": 5
     },
-    "Caliber40x46": { // m4a1, ubgl (ar) / fn40gl
+    "Caliber40x46": {
+        // m4a1, ubgl (ar) / fn40gl
         "BaseVerticalKick": 50,
         "BaseHorizontalKick": 25,
         "BaseRollKick": 200,
         "BaseBackwardsRecoil": 5
     },
-    "Caliber40mmRU": { // vog-25, ubgl (ak)
+    "Caliber40mmRU": {
+        // vog-25, ubgl (ak)
         "BaseVerticalKick": 50,
         "BaseHorizontalKick": 25,
         "BaseRollKick": 200,

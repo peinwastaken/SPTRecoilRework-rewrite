@@ -19,9 +19,22 @@ namespace RecoilReworkClient.Patches
         private static bool Prefix(ProceduralWeaponAnimation __instance)
         {
             Player.FirearmController firearmController = __instance.Shootingg.FirearmController;
-            if (firearmController == null) return false;
+            if (firearmController == null) return true;
 
-            RecoilController.Instance?.ApplyComplexRotation(__instance);
+            Player player = firearmController.GetComponent<Player>();
+            if (player == null) return true;
+
+            if (player.IsYourPlayer)
+            {
+                RecoilController.Instance?.ApplyComplexRotation(__instance);
+            }
+
+            LeftStanceStateController leftStanceController = player.GetComponent<LeftStanceStateController>();
+
+            if (leftStanceController != null)
+            {
+                leftStanceController.ApplyComplexRotation(player.ProceduralWeaponAnimation);
+            }
             
             return false;
         }

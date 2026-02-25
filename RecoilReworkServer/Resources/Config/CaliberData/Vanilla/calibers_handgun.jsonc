@@ -1,59 +1,69 @@
 {
-    "Caliber9x18PM": { // 9x18mm, weaker
+    "Caliber9x18PM": {
+        // 9x18mm, weaker
         "BaseVerticalKick": 13,
         "BaseHorizontalKick": 8,
         "BaseRollKick": 20,
         "BaseBackwardsRecoil": 1.5
     },
-    "Caliber9x18PMM": { // 9x18mm, stronger
+    "Caliber9x18PMM": {
+        // 9x18mm, stronger
         "BaseVerticalKick": 16,
         "BaseHorizontalKick": 10,
         "BaseRollKick": 30,
         "BaseBackwardsRecoil": 1.8
     },
-    "Caliber9x19PARA": { // 9mm
+    "Caliber9x19PARA": {
+        // 9mm
         "BaseVerticalKick": 30,
         "BaseHorizontalKick": 19,
         "BaseRollKick": 90,
         "BaseBackwardsRecoil": 2.2
     },
-    "Caliber9x21": { // 9x21, sr-2m
+    "Caliber9x21": {
+        // 9x21, sr-2m
         "BaseVerticalKick": 35,
         "BaseHorizontalKick": 22,
         "BaseRollKick": 90,
         "BaseBackwardsRecoil": 2.2
     },
-    "Caliber57x28": { // 5.7x28, five-seven
+    "Caliber57x28": {
+        // 5.7x28, five-seven
         "BaseVerticalKick": 20,
         "BaseHorizontalKick": 12,
         "BaseRollKick": 55,
         "BaseBackwardsRecoil": 2.8
     },
-    "Caliber46x30": { // 4.6x30, mp7
+    "Caliber46x30": {
+        // 4.6x30, mp7
         "BaseVerticalKick": 22,
         "BaseHorizontalKick": 15,
         "BaseRollKick": 40,
         "BaseBackwardsRecoil": 2.5
     },
-    "Caliber762x25TT": { // 7.62x25, tokarev
+    "Caliber762x25TT": {
+        // 7.62x25, tokarev
         "BaseVerticalKick": 10,
         "BaseHorizontalKick": 6,
         "BaseRollKick": 20,
         "BaseBackwardsRecoil": 1.5
     },
-    "Caliber1143x23ACP": { // .45 acp, 1911
+    "Caliber1143x23ACP": {
+        // .45 acp, 1911
         "BaseVerticalKick": 32,
         "BaseHorizontalKick": 22,
         "BaseRollKick": 70,
         "BaseBackwardsRecoil": 3.5
     },
-    "Caliber9x33R": { // .357 magnum, deagle
+    "Caliber9x33R": {
+        // .357 magnum, deagle
         "BaseVerticalKick": 55,
         "BaseHorizontalKick": 35,
         "BaseRollKick": 100,
         "BaseBackwardsRecoil": 4.5
     },
-    "Caliber127x33": { // .50 ae, deagle
+    "Caliber127x33": {
+        // .50 ae, deagle
         "BaseVerticalKick": 75,
         "BaseHorizontalKick": 35,
         "BaseRollKick": 120,

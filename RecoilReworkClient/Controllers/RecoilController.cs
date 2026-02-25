@@ -217,8 +217,8 @@ namespace RecoilReworkClient.Controllers
             AngleRecoverySpeed = angleRecoverySpeed;
             
             // calculate camera pitch/yaw visual recoil based on weapon backwards recoil amt
-            camAng.x = PositionBackwardsForce * 2f;
-            camAng.y = PositionBackwardsForce * 2f;
+            camAng.x = PositionBackwardsForce * 4f;
+            camAng.y = PositionBackwardsForce * 4f;
             
             // recoil stuff based on if weapon is pistol or not
             if (IsPistol)
@@ -287,11 +287,11 @@ namespace RecoilReworkClient.Controllers
                 recoilPosForce.y *= 0.7f;
                 recoilPosForce.z *= 0.3f;
             }
-
+            
             if (IsPistol)
             {
-                recoilKickForce *= 3f;
-                recoilKickForce.y *= 0.2f;
+                recoilKickForce.x *= 3f;
+                recoilKickForce.z *= 3f;
             }
             
             recoilKickForce *= Random.Range(0.9f, 1.1f);

@@ -45,6 +45,11 @@ namespace RecoilReworkClient
             new ShotEffectorProcessPatch().Enable();
             new PlayerInitPatch().Enable();
             new LerpCameraPatch().Enable();
+            new MovementContextToggleStancePatch().Enable();
+            new FirearmControllerChangeStancePatch().Enable();
+            // new DisableLeftStanceFromBodyPatch().Enable();
+            // new DisableLeftStanceFromHandsPatch().Enable();
+            // new DisableLeftStanceFromInventoryPatch().Enable();
             //new ApplyThirdPersonTransformationsPatch().Enable();
         }
 

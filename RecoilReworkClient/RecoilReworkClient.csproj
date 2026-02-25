@@ -31,6 +31,9 @@
         <HintPath>..\..\..\BepInEx\core\0Harmony.dll</HintPath>
         <Private>False</Private>
       </Reference>
+      <Reference Include="AnimationSystem.Types">
+        <HintPath>..\..\..\EscapeFromTarkov_Data\Managed\AnimationSystem.Types.dll</HintPath>
+      </Reference>
       <Reference Include="Assembly-CSharp">
         <HintPath>..\..\..\EscapeFromTarkov_Data\Managed\Assembly-CSharp.dll</HintPath>
         <Private>False</Private>
@@ -48,6 +51,9 @@
       <Reference Include="UnityEngine">
         <HintPath>..\..\..\EscapeFromTarkov_Data\Managed\UnityEngine.dll</HintPath>
         <Private>False</Private>
+      </Reference>
+      <Reference Include="UnityEngine.AnimationModule">
+        <HintPath>..\..\..\EscapeFromTarkov_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
       </Reference>
     </ItemGroup>
 

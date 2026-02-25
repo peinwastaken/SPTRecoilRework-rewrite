@@ -14,11 +14,12 @@ namespace RecoilReworkClient.Patches
         }
 
         [PatchPostfix]
-        private static void Postfix(Player __instance)
+        private static void PatchPostfix(Player __instance)
         {
             if (__instance.IsYourPlayer)
             {
                 __instance.gameObject.AddComponent<RecoilController>();
+                __instance.gameObject.AddComponent<LeftStanceStateController>();
             }
         }
     }

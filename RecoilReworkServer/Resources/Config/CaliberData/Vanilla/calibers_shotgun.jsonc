@@ -1,17 +1,20 @@
 {
-    "Caliber20g": { // 20gauge, toz
+    "Caliber20g": {
+        // 20gauge, toz
         "BaseVerticalKick": 50,
         "BaseHorizontalKick": 30,
         "BaseRollKick": 100,
         "BaseBackwardsRecoil": 9
     },
-    "Caliber12g": { // 12gauge, saiga / mp133
+    "Caliber12g": {
+        // 12gauge, saiga / mp133
         "BaseVerticalKick": 70,
         "BaseHorizontalKick": 50,
         "BaseRollKick": 120,
         "BaseBackwardsRecoil": 13
     },
-    "Caliber23x75": { // 4gauge, ks-23m
+    "Caliber23x75": {
+        // 4gauge, ks-23m
         "BaseVerticalKick": 90,
         "BaseHorizontalKick": 60,
         "BaseRollKick": 150,
