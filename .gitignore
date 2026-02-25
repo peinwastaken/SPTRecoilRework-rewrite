@@ -422,3 +422,5 @@ fabric.properties
 
 .idea/
 .Release/
+*.7z
+*.zip
