@@ -1,14 +1,9 @@
 @echo off
 color b
 
-set /p outFile=Enter output archive name (ModRelease.zip):
-set releaseDir=.\Release\
+set outFile=%1
+set releaseDir=%2
 
-"%ProgramFiles%\7-Zip\7z.exe" a -t7z "%outFile%" ".\Release\*"
-
-if exist %releaseDir% (
-    rmdir /s /q %releaseDir%
-)
+"%ProgramFiles%\7-Zip\7z.exe" a -t7z "%outFile%" "%releaseDir%\*"
 
 echo Release bundled!
-timeout /t 2 > nul

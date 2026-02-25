@@ -5,7 +5,7 @@
         <ModFiles Include="Resources\**\*"/>
     </ItemGroup>
     
-    <Target Name="CreateReleaseFolder" BeforeTargets="PostBuildEvent" Condition="!Exists('$(ReleaseRoot)') and $(Configuration)=='Release'" >
+    <Target Name="CreateReleaseFolder" BeforeTargets="Build" Condition="!Exists('$(ReleaseRoot)') and $(Configuration)=='Release'" >
         <Message Text="Creating release folder at $(ReleaseRoot)" Importance="high"/>
         <MakeDir Directories="$(ReleaseRoot)" />
     </Target>
@@ -15,7 +15,7 @@
         <IsServerMod Condition="$(MSBuildProjectName.Contains('Server')) or $(SPTModType)=='Server'">true</IsServerMod>
     </PropertyGroup>
     
-    <Target Name="CopyClientFiles" AfterTargets="PostBuildEvent" Condition="$(IsClientMod)=='true'">
+    <Target Name="CopyClientFiles" AfterTargets="Build" Condition="$(IsClientMod)=='true'">
         <!-- copy client files to spt -->
         <Message Text="Copying client mod to $(ClientModsDir)" Importance="high"/>
         <Copy
@@ -37,7 +37,7 @@
         <Message Text="Successfully copied client mod!" Importance="high"/>
     </Target>
 
-    <Target Name="CopyServerFiles" AfterTargets="PostBuildEvent" Condition="$(IsServerMod)=='true'">
+    <Target Name="CopyServerFiles" AfterTargets="Build" Condition="$(IsServerMod)=='true'">
         <!-- copy server files to spt -->
         <Message Text="Copying server mod to $(ServerModsDir)" Importance="high"/>
         <Copy
