@@ -1,11 +1,8 @@
-using BepInEx.Configuration;
 using EFT.Animations;
 using EFT.InventoryLogic;
-using RecoilReworkClient.Config.Settings;
 using RecoilReworkClient.Enum;
 using RecoilReworkClient.Models;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace RecoilReworkClient.Helpers
@@ -38,7 +35,6 @@ namespace RecoilReworkClient.Helpers
             typeof(SilencerItemClass),
             typeof(ForegripItemClass)
         ];
-        
 
         public static bool HasStock(this Weapon weapon)
         {

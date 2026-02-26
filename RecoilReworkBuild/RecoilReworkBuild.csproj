@@ -3,11 +3,12 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
     </PropertyGroup>
+    
+    <Target Name="CreateReleaseFolder" BeforeTargets="PackageAfterBuild">
+        <MakeDir Directories="$(ReleaseRoot)" />
+    </Target>
 
     <Target Name="PackageAfterBuild" AfterTargets="AfterBuild" Condition="Exists('$(ReleaseRoot)') and $(Configuration)=='Release'">
-        <!-- create temporary release folder -->
-        <MakeDir Directories="$(ReleaseRoot)" />
-        
         <!-- delete existing release zip -->
         <Delete Files="$(ReleaseDestination)" Condition="Exists('$(ReleaseDestination)')" />
         
