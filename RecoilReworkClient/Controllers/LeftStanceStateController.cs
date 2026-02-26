@@ -15,8 +15,8 @@ namespace RecoilReworkClient.Controllers
         public Vector3 LeftStancePositionOffset = Vector3.zero;
         public Vector3 LeftStanceRotationOffset = Vector3.zero;
         
-        public float LeftStancePositionSpeed = 11.5f;
-        public float LeftStanceRotationSpeed = 10f;
+        public float LeftStancePositionSpeed = 1.7f;
+        public float LeftStanceRotationSpeed = 1.6f;
         
         public Vector3 LeftStancePositionOffsetMult = new Vector3(-0.2f, -0.1f, 0.06f);
         public Vector3 LeftStanceRotationOffsetMult = new Vector3(10f, 1f, 7f);
@@ -26,17 +26,19 @@ namespace RecoilReworkClient.Controllers
         private AnimationCurve _lsHorizontalPosCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
         private AnimationCurve _lsVerticalPosCurve = new AnimationCurve(
             new Keyframe(0f, 0f, 0f, 0f),
-            new Keyframe(0.5f, 1f, 0f, 0f),
+            new Keyframe(0.6531179f, 1.002346f, 0f, 0f),
             new Keyframe(1f, 0f, 0f, 0f)
         );
         private AnimationCurve _lsForwardsPosAnimCurve = new AnimationCurve(
             new Keyframe(0f, 0f, 0f, 0f),
+            new Keyframe(0.1819199f, 0.4060913f, 4.197513f, 4.197513f),
             new Keyframe(0.5f, 1f, 0f, 0f),
+            new Keyframe(0.7733642f, 0.05806886f, -4.211924f, -4.211924f),
             new Keyframe(1f, 0f, 0f, 0f)
         );
         private AnimationCurve _lsWeaponRotationCurve = new AnimationCurve(
             new Keyframe(0f, 0f, 0f, 0f),
-            new Keyframe(0.5f, 1f, 0f, 0f),
+            new Keyframe(0.6531179f, 1.002346f, 0f, 0f),
             new Keyframe(1f, 0f, 0f, 0f)
         );
         
@@ -57,8 +59,8 @@ namespace RecoilReworkClient.Controllers
 
         private void InterpolateStance(float value, float dt)
         {
-            _leftStancePositionCurve = Mathf.SmoothStep(_leftStancePositionCurve, value, dt * LeftStancePositionSpeed);
-            _leftStanceRotationCurve = Mathf.SmoothStep(_leftStanceRotationCurve, value, dt * LeftStanceRotationSpeed);
+            _leftStancePositionCurve = Mathf.Lerp(_leftStancePositionCurve, value, LeftStancePositionSpeed * dt);
+            _leftStanceRotationCurve = Mathf.Lerp(_leftStanceRotationCurve, value, LeftStanceRotationSpeed * dt);
         }
 
         private void Update()
