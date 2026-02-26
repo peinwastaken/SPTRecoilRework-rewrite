@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace RecoilReworkClient
 {
-    [BepInPlugin("com.pein.recoilrework2", "Recoil Rework Rewrite", "1.0.0")]
+    [BepInPlugin("com.pein.recoilrework2", "Recoil Rework Rewrite", "1.0.1")]
     public class Plugin : BaseUnityPlugin
     {
         internal static new ManualLogSource Logger;
