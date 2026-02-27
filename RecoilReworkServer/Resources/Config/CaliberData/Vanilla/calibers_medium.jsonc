@@ -1,8 +1,8 @@
 {
     "Caliber545x39": {
         // 5.45x39, ak74
-        "BaseVerticalKick": 30,
-        "BaseHorizontalKick": 22,
+        "BaseVerticalKick": 25,
+        "BaseHorizontalKick": 18,
         "BaseRollKick": 200,
         "BaseBackwardsRecoil": 3.5
     },
@@ -11,6 +11,6 @@
         "BaseVerticalKick": 28,
         "BaseHorizontalKick": 20,
         "BaseRollKick": 200,
-        "BaseBackwardsRecoil": 3.8
+        "BaseBackwardsRecoil": 3.5
     }
 }
