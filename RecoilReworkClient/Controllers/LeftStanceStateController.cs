@@ -16,11 +16,11 @@ namespace RecoilReworkClient.Controllers
         public Vector3 LeftStancePositionOffset = Vector3.zero;
         public Vector3 LeftStanceRotationOffset = Vector3.zero;
         
-        public float LeftStancePositionSpeed = 3f;
-        public float LeftStanceRotationSpeed = 2.8f;
+        public float LeftStancePositionSpeed = 4f;
+        public float LeftStanceRotationSpeed = 3.5f;
         
         public Vector3 LeftStancePositionOffsetMult = new Vector3(-0.2f, -0.1f, 0.06f);
-        public Vector3 LeftStanceRotationOffsetMult = new Vector3(6f, -15f, -7f);
+        public Vector3 LeftStanceRotationOffsetMult = new Vector3(6f, -15f, -10f);
         
         private float _leftStancePositionCurve = 0f;
         private float _leftStanceRotationCurve = 0f;
@@ -120,6 +120,18 @@ namespace RecoilReworkClient.Controllers
         public void ApplySimpleRotation(ProceduralWeaponAnimation pwa)
         {
             
+        }
+
+        public void CalculateShoulderSwapSpeed(float totalWeight)
+        {
+            float posSpeed = 4f - Mathf.Pow(totalWeight, 2) * 0.03f;
+            float angSpeed = 4f - Mathf.Pow(totalWeight, 2) * 0.03f;
+
+            posSpeed = Mathf.Max(posSpeed, 1f);
+            angSpeed = Mathf.Max(angSpeed, 1f);
+
+            LeftStancePositionSpeed = posSpeed;
+            LeftStanceRotationSpeed = angSpeed;
         }
     }
 }

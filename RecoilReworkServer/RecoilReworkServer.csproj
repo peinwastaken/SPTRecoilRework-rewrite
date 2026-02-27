@@ -21,8 +21,4 @@
     <PropertyGroup>
         <SPTModType>Server</SPTModType>
     </PropertyGroup>
-    
-    <PropertyGroup>
-        <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-    </PropertyGroup>
 </Project>

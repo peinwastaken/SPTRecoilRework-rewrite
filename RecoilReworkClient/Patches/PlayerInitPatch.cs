@@ -18,8 +18,8 @@ namespace RecoilReworkClient.Patches
         {
             if (__instance.IsYourPlayer)
             {
-                __instance.gameObject.AddComponent<RecoilController>();
                 __instance.gameObject.AddComponent<LeftStanceStateController>();
+                __instance.gameObject.AddComponent<RecoilController>();
             }
         }
     }

@@ -62,8 +62,4 @@
     <PropertyGroup>
         <SPTModType>Client</SPTModType>
     </PropertyGroup>
-
-    <PropertyGroup>
-        <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-    </PropertyGroup>
 </Project>

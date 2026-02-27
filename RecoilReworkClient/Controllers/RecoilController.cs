@@ -22,6 +22,7 @@ namespace RecoilReworkClient.Controllers
         public Player player;
         public Weapon currentWeapon;
         public ProceduralWeaponAnimation proceduralWeaponAnimation;
+        public LeftStanceStateController leftStanceController;
         
         public Spring WeaponKickSpring;
         public Spring WeaponPositionSpring;
@@ -98,6 +99,7 @@ namespace RecoilReworkClient.Controllers
 
             Instance = this;
             player = GetComponent<Player>();
+            leftStanceController = GetComponent<LeftStanceStateController>();
             proceduralWeaponAnimation = player.ProceduralWeaponAnimation;
             
             WeaponKickSpring = new Spring();
@@ -240,7 +242,8 @@ namespace RecoilReworkClient.Controllers
                     PositionUpwardsForce += caliberEnergy * 0.1f;
                 }
             }
-            
+
+            leftStanceController.CalculateShoulderSwapSpeed(totalWeight);
             pwa.CrankRecoil = GeneralSettings.CrankRecoil.Value;
         }
         
