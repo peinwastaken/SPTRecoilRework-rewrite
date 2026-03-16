@@ -178,12 +178,12 @@ namespace RecoilReworkClient.Controllers
             float verticalKickModifier = recoilData.VerticalKickMultiplier;
             float horizontalKickModifier = recoilData.HorizontalKickMultiplier;
             
-            float verticalKick = CurrentCaliberData.BaseVerticalKick * verticalKickModifier;
-            float horizontalKick = CurrentCaliberData.BaseHorizontalKick * horizontalKickModifier;
+            float verticalKick = CurrentCaliberData.BaseVerticalKick * verticalKickModifier * BaseRecoilSettings.BaseKickMultiplier.Value.x;
+            float horizontalKick = CurrentCaliberData.BaseHorizontalKick * horizontalKickModifier * BaseRecoilSettings.BaseKickMultiplier.Value.y;
             float rollKick = CurrentCaliberData.BaseRollKick;
 
-            float verticalAngle = verticalKick * BaseRecoilSettings.WeaponKickToAngleMult.Value;
-            float horizontalAngle = horizontalKick * BaseRecoilSettings.WeaponKickToAngleMult.Value;
+            float verticalAngle = verticalKick * BaseRecoilSettings.WeaponKickToAngleMult.Value * BaseRecoilSettings.BaseAngleMultiplier.Value.x;
+            float horizontalAngle = horizontalKick * BaseRecoilSettings.WeaponKickToAngleMult.Value * BaseRecoilSettings.BaseAngleMultiplier.Value.y;
             
             float caliberEnergy = new Vector2(CurrentCaliberData.BaseVerticalKick, CurrentCaliberData.BaseHorizontalKick).magnitude * 0.01f;
             
@@ -301,7 +301,13 @@ namespace RecoilReworkClient.Controllers
                 recoilPosForce.y *= 0.7f;
                 recoilPosForce.z *= 0.3f;
             }
-            
+            else
+            {
+                recoilAngForce.x *= 1.3f;
+                recoilAngForce.y *= 1.3f;
+                recoilAngForce.z *= 1.3f;
+            }
+
             if (IsPistol)
             {
                 recoilKickForce.x *= 3f;
@@ -316,7 +322,6 @@ namespace RecoilReworkClient.Controllers
             float pitchPenalty = AngleSprayPenalty * Random.Range(cfgPitchPenalty.x, cfgPitchPenalty.y);
             float yawPenalty = AngleSprayPenalty * Random.Range(cfgYawPenalty.x, cfgYawPenalty.y);
             
-            recoilAngForce *= Player.ProceduralWeaponAnimation.IsAiming ? 0.5f : 1f;
             recoilAngForce.x += recoilAngForce.x * Random.Range(0f, pitchPenalty);
             recoilAngForce.z += recoilAngForce.z * Random.Range(-yawPenalty, yawPenalty);
 
@@ -366,18 +371,31 @@ namespace RecoilReworkClient.Controllers
             
             // do recoil angle
             DeferredRotateCustomOrder(pwa, recoilPivot, WeaponAngleSpring.Position);
-
+            
             // do recoil position
-            _tempPos += _tempRot * WeaponPositionSpring.Position;
+            Vector3 up = _tempRot * Vector3.up;
+            Vector3 recoilOffset = _tempRot * WeaponPositionSpring.Position;
+
+// Component moving toward camera
+            float towardCamera = Vector3.Dot(recoilOffset, -up);
+
+// Only compress when moving toward camera
+            if (towardCamera > 0f)
+            {
+                // Soft compression curve
+                float compressed = towardCamera / (1f + towardCamera * 0.35f);
+                recoilOffset += up * (towardCamera - compressed);
+            }
+
+            _tempPos += recoilOffset;
             
             ApplyAimingAlignment(dt);
             
             // current scope rotation
             Quaternion targetScopeRotation = (Quaternion)_targetScopeRotationField.GetValue(pwa);
             _scopeRot = Quaternion.Lerp(_scopeRot, pwa.IsAiming ? targetScopeRotation : Quaternion.identity, pwa.CameraSmoothTime * pwa.AimingSpeed * dt);
-
-            pwa.HandsContainer.WeaponRootAnim
-            .SetPositionAndRotation(_tempPos, _tempRot * _scopeRot);
+            
+            pwa.HandsContainer.WeaponRootAnim.SetPositionAndRotation(_tempPos, _tempRot * _scopeRot);
         }
         
         private void DeferredRotateCustomOrder(ProceduralWeaponAnimation pwa, Vector3 worldPivot, Vector3 rotation)

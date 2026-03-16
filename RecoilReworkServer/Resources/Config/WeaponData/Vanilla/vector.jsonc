@@ -5,8 +5,8 @@
             "5fc3f2d5900b1d5091531e57"
         ],
         "weaponRecoilModifiers": {
-            "VerticalKickMultiplier": 0.3,
-            "HorizontalKickMultiplier": 0.25
+            "VerticalKickMultiplier": 0.7,
+            "HorizontalKickMultiplier": 0.7
         },
         "overrideProperties": {}
     }

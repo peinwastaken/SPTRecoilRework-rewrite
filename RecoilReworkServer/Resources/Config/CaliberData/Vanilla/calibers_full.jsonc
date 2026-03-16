@@ -8,10 +8,10 @@
     },
     "Caliber9x39": {
         // 9x39, as-val / vss
-        "BaseVerticalKick": 20,
-        "BaseHorizontalKick": 15,
+        "BaseVerticalKick": 25,
+        "BaseHorizontalKick": 20,
         "BaseRollKick": 120,
-        "BaseBackwardsRecoil": 4
+        "BaseBackwardsRecoil": 2.2
     },
     "Caliber762x35": {
         // .300 blackout, mcx
@@ -43,9 +43,9 @@
     },
     "Caliber68x51": {
         // 6.8x51, spear
-        "BaseVerticalKick": 50,
-        "BaseHorizontalKick": 36,
+        "BaseVerticalKick": 45,
+        "BaseHorizontalKick": 30,
         "BaseRollKick": 200,
-        "BaseBackwardsRecoil": 6.0
+        "BaseBackwardsRecoil": 4.0
     }
 }

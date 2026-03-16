@@ -21,7 +21,7 @@ namespace RecoilReworkClient.Config.Settings
                 "Standing spray penalty multiplier",
                 1f,
                 new ConfigDescription(
-                    "asddsa",
+                    "Standing spray penalty multiplier",
                     null,
                     new ConfigurationManagerAttributes { Order = 1000 }
                 )
@@ -32,7 +32,7 @@ namespace RecoilReworkClient.Config.Settings
                 "Crouching spray penalty multiplier",
                 0.5f,
                 new ConfigDescription(
-                    "asddsa",
+                    "Crouching spray penalty multiplier",
                     null,
                     new ConfigurationManagerAttributes { Order = 990 }
                 )
@@ -43,7 +43,7 @@ namespace RecoilReworkClient.Config.Settings
                 "Prone spray penalty multiplier",
                 0.2f,
                 new ConfigDescription(
-                    "asddsa",
+                    "Prone spray penalty multiplier",
                     null,
                     new ConfigurationManagerAttributes { Order = 980 }
                 )
@@ -54,7 +54,7 @@ namespace RecoilReworkClient.Config.Settings
                 "Mounted spray penalty multiplier",
                 0.5f,
                 new ConfigDescription(
-                    "asddsa",
+                    "Mounted spray penalty multiplier",
                     null,
                     new ConfigurationManagerAttributes { Order = 970 }
                 )
@@ -65,7 +65,7 @@ namespace RecoilReworkClient.Config.Settings
                 "Aiming spray penalty multiplier",
                 1f,
                 new ConfigDescription(
-                    "asddsa",
+                    "Aiming spray penalty multiplier",
                     null,
                     new ConfigurationManagerAttributes { Order = 960 }
                 )
@@ -73,10 +73,10 @@ namespace RecoilReworkClient.Config.Settings
             
             HipfirePenaltyMult = config.Bind(
                 category,
-                "Hipfire (point.... fire...? who cares) spray penalty multiplier",
+                "Hipfire spray penalty multiplier",
                 2f,
                 new ConfigDescription(
-                    "asddsa",
+                    "Hipfire (point.... fire...? who cares) spray penalty multiplier",
                     null,
                     new ConfigurationManagerAttributes { Order = 950 }
                 )

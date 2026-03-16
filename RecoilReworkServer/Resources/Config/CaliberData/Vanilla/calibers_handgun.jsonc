@@ -1,15 +1,15 @@
 {
     "Caliber9x18PM": {
         // 9x18mm, weaker
-        "BaseVerticalKick": 13,
-        "BaseHorizontalKick": 8,
+        "BaseVerticalKick": 20,
+        "BaseHorizontalKick": 15,
         "BaseRollKick": 20,
-        "BaseBackwardsRecoil": 1.5
+        "BaseBackwardsRecoil": 1.7
     },
     "Caliber9x18PMM": {
         // 9x18mm, stronger
-        "BaseVerticalKick": 16,
-        "BaseHorizontalKick": 10,
+        "BaseVerticalKick": 25,
+        "BaseHorizontalKick": 18,
         "BaseRollKick": 30,
         "BaseBackwardsRecoil": 1.8
     },
@@ -43,10 +43,10 @@
     },
     "Caliber762x25TT": {
         // 7.62x25, tokarev
-        "BaseVerticalKick": 10,
-        "BaseHorizontalKick": 6,
-        "BaseRollKick": 20,
-        "BaseBackwardsRecoil": 1.5
+        "BaseVerticalKick": 20,
+        "BaseHorizontalKick": 15,
+        "BaseRollKick": 40,
+        "BaseBackwardsRecoil": 1.7
     },
     "Caliber1143x23ACP": {
         // .45 acp, 1911
