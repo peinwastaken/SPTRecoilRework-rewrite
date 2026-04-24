@@ -1,5 +1,6 @@
 using EFT.Animations;
 using EFT.InventoryLogic;
+using RecoilReworkClient.Controllers;
 using RecoilReworkClient.Enum;
 using RecoilReworkClient.Models;
 using System;
@@ -9,25 +10,6 @@ namespace RecoilReworkClient.Helpers
 {
     public static class WeaponHelper
     {
-        public static string[] BullpupIds =
-        [
-            "5f2a9575926fd9352339381f", // rfb
-            "62e7c4fba689e8c9c50dfc38", // aug a1
-            "63171672192e68c5460cebc5", // aug a3
-            "6718817435e3cfd9550d2c27", // aug a3 black
-            "5c488a752e221602b412af63", // mdr 556
-            "5dcbd56fdbd3d91b3e5468d5", // mdr 762
-            "5cadfbf7ae92152ac412eeef", // ash-12
-            "696ce75f73805e693401aba0", // armory msbs
-            "696fe2ebcf7469bf3805173f", // armory msbs fde
-            "66a47e98c486ec9d1af3a4da", // armory x95
-            "66a544c956621d3364f6085e", // armory x95 fde,
-            "66a545898022784400d6c836", // armory x95 od,
-            "67f425638b8cbfdc0cd1b5f2", // armory x95 9mm,
-            "6962f22fddc6698c6309b620", // armory f2000
-            "6969867592a994a633084f70" // armory f2000 fde
-        ];
-
         private static Type[] _recoilAffectingModTypes =
         [
             typeof(FlashHiderItemClass),
@@ -38,15 +20,6 @@ namespace RecoilReworkClient.Helpers
 
         public static bool HasStock(this Weapon weapon)
         {
-            bool isPistol = weapon.IsPistol();
-            bool hasStockSlot = false;
-            
-            foreach (Slot slot in weapon.AllSlots)
-            {
-                hasStockSlot = slot.ID.Contains("mod_stock");
-                break;
-            }
-            
             // is weapon id in the bullpup array?
             if (weapon.IsBullpup())
             {
@@ -127,7 +100,9 @@ namespace RecoilReworkClient.Helpers
 
         public static bool IsBullpup(this Weapon weapon)
         {
-            return BullpupIds.ContainsKeyword(weapon.StringTemplateId);
+            Plugin.RecoilModifierData.TryGetValue(weapon.StringTemplateId, out RecoilModifierData modifierData);
+
+            return modifierData != null && modifierData.IsBullpup;
         }
 
         public static float GetRecoilReduction(this Weapon weapon)

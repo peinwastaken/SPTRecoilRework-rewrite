@@ -10,7 +10,9 @@
             "6962f22fddc6698c6309b620", // armory f2000
             "6969867592a994a633084f70" // armory f2000 fde
         ],
-        "weaponRecoilModifiers": {},
+        "weaponRecoilModifiers": {
+            "IsBullpup": true
+        },
         "overrideProperties": {
             "RecoilCenter": {
                 "x": 0.05,

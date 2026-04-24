@@ -9,7 +9,9 @@
             "5dcbd56fdbd3d91b3e5468d5", // mdr 762
             "5cadfbf7ae92152ac412eeef" // ash-12
         ],
-        "weaponRecoilModifiers": {},
+        "weaponRecoilModifiers": {
+            "IsBullpup": true
+        },
         "overrideProperties": {
             // what kind of recoil pivot is this?
             // this is a really good recoil pivot for your tarkov gun. feels good to shoot. tell your friend to use it too.

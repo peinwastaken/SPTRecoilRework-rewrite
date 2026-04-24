@@ -9,5 +9,8 @@ namespace RecoilReworkServer.Models
         
         [JsonPropertyName("HorizontalKickMultiplier")]
         public float HorizontalKickMultiplier { get; set; } = 1f;
+
+        [JsonPropertyName("IsBullpup")]
+        public bool IsBullpup { get; set; } = false;
     }
 }
