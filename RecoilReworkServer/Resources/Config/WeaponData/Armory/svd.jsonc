@@ -1,8 +1,8 @@
 [
     {
         "weaponIds": [
-            "5ac66d015acfc400180ae6e4",
-            "5ac66cb05acfc40198510a10"
+            "6657bc8faeddd6b0a9b40224", // svd
+            "6657bd4d3a4d6e7c33fd2fdc" // svd green
         ],
         "weaponRecoilModifiers": {},
         "overrideProperties": {

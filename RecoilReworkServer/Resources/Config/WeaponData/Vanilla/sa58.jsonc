@@ -1,14 +1,13 @@
 [
     {
         "weaponIds": [
-            "5ac66d015acfc400180ae6e4",
-            "5ac66cb05acfc40198510a10"
+            "5b0bbe4e5acfc40dc528a72d"
         ],
         "weaponRecoilModifiers": {},
         "overrideProperties": {
             "RecoilCenter": {
                 "x": 0.05,
-                "y": -0.35,
+                "y": -0.45,
                 "z": -0.01
             }
         }

@@ -50,6 +50,10 @@ namespace RecoilReworkClient.Controllers
         
         public float AngleSprayPenalty = 0f;
         public float AngleRecoverySpeed = 8f;
+
+        public float RecoilAngleSpeedWhileShooting = 0.5f;
+        public float RecoilAngleSpeedWhileIdle = 3f;
+        public float PenaltyRecoveryDelayAfterShot = 0.2f;
         
         /*
          * x - cam pos right
@@ -154,13 +158,46 @@ namespace RecoilReworkClient.Controllers
             CameraPositionSpring.Update(dt);
             CameraAngleSpring.Update(dt);
 
+            if (CurrentWeapon == null) return;
+            bool isAutoFireOn = ProceduralWeaponAnimation.Shootingg.NewShotRecoil.AutoFireOn;
+            bool isRecoilRecovering = IsRecoilRecovering();
+            Weapon.EFireMode fireMode = CurrentWeapon.FireMode.FireMode;
+            bool isWeaponBurstOrAuto = fireMode == Weapon.EFireMode.fullauto || fireMode == Weapon.EFireMode.burst;
+            
             if (
                 !AngleSprayPenalty.ApproxEquals(0f) &&
-                !ProceduralWeaponAnimation.Shootingg.NewShotRecoil.AutoFireOn &&
-                _timeSinceLastShot > 0.2f)
+                isRecoilRecovering)
             {
                 AngleSprayPenalty = Mathf.Lerp(AngleSprayPenalty, 0f, AngleRecoverySpeed * Time.fixedDeltaTime);
             }
+
+            if (isWeaponBurstOrAuto && isAutoFireOn || !isWeaponBurstOrAuto && isRecoilRecovering)
+            {
+                WeaponAngleSpring.Speed = RecoilAngleSpeedWhileShooting;
+            }
+            else
+            {
+                WeaponAngleSpring.Speed = RecoilAngleSpeedWhileIdle;
+            }
+
+            /*
+            if (!isWeaponBurstOrAuto)
+            {
+                WeaponAngleSpring.Speed = Mathf.Lerp(WeaponAngleSpring.Speed, RecoilAngleSpeedWhileShooting, 4f * dt);
+            }
+            else if (isRecoilRecovering)
+            {
+                WeaponAngleSpring.Speed = Mathf.Lerp(WeaponAngleSpring.Speed, RecoilAngleSpeedWhileIdle, 4f * dt);
+            }
+            else
+            {
+                WeaponAngleSpring.Speed = Mathf.Lerp(WeaponAngleSpring.Speed, RecoilAngleSpeedWhileShooting, 4f * dt);
+            }*/
+        }
+
+        private bool IsRecoilRecovering()
+        {
+            return _timeSinceLastShot > PenaltyRecoveryDelayAfterShot;
         }
 
         public void RecalculateRecoilForces(ProceduralWeaponAnimation pwa, Weapon weapon)
@@ -219,7 +256,6 @@ namespace RecoilReworkClient.Controllers
             WeaponKickSpring.DampingRatio = finalKickDamping;
             
             // calculate position spring damping and frequency from caliber backwards force
-
             float baseBackwardsFrequency = 5f;
             float finalPositionFrequency = baseBackwardsFrequency - (Mathf.Pow(CurrentCaliberData.BaseBackwardsRecoil, 2) * 0.025f);
             float baseBackwardsDamping = 1f;
@@ -234,6 +270,15 @@ namespace RecoilReworkClient.Controllers
             // calculate camera pitch/yaw visual recoil based on weapon backwards recoil amt
             camAng.x = PositionBackwardsForce * 4f;
             camAng.y = PositionBackwardsForce * 4f;
+
+            if (IsBullpup || HasStock)
+            {
+                PenaltyRecoveryDelayAfterShot = 0.2f;
+            }
+            else
+            {
+                PenaltyRecoveryDelayAfterShot = 0.7f;
+            }
             
             // recoil stuff based on if weapon is pistol or not
             if (IsPistol)
@@ -263,6 +308,7 @@ namespace RecoilReworkClient.Controllers
         public void OnShoot()
         {
             _timeSinceLastShot = 0f;
+            bool hasStock = HasStock || IsBullpup;
             
             ProceduralWeaponAnimation pwa = Player.ProceduralWeaponAnimation;
             float stancePenaltyMult = PlayerHelper.GetStanceMultiplier(Player.Pose);
@@ -287,7 +333,7 @@ namespace RecoilReworkClient.Controllers
             recoilAngForce.z *= Random.Range(-1f, 1f);
             recoilPosForce.x *= Random.Range(-1f, 1f);
             
-            if (HasStock)
+            if (hasStock)
             {
                 recoilKickForce.x *= 0.7f;
                 recoilKickForce.y *= 0.7f;

@@ -10,6 +10,8 @@
             "583990e32459771419544dd2",
             "5839a40f24597726f856b511",
             "5ab8e9fcd8ce870019439434",
+            "628b5638ad252a16da6dd245",
+            "628b9c37a733087d0d7fe84b",
             "5beed0f50db834001c062b12"
         ],
         "weaponRecoilModifiers": {
@@ -19,7 +21,7 @@
         "overrideProperties": {
             "RecoilCenter": {
                 "x": 0.05,
-                "y": -0.3,
+                "y": -0.35,
                 "z": -0.01
             }
         }
