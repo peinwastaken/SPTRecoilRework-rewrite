@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="SPTarkov.Server.Core" Version="4.0.8" />
+      <PackageReference Include="SPTarkov.Server.Core" Version="4.0.13" />
     </ItemGroup>
 
     <ItemGroup>
