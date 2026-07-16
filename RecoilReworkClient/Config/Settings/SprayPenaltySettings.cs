@@ -6,8 +6,8 @@ namespace RecoilReworkClient.Config.Settings
     public static class SprayPenaltySettings
     {
         public static ConfigEntry<bool> EnableSprayPenalty { get; private set; }
-        public static ConfigEntry<Vector2> PitchSprayPenaltyMult { get; private set; }
-        public static ConfigEntry<Vector2> YawSprayPenaltyMult { get; private set; }
+        public static ConfigEntry<float> PitchSprayPenaltyMult { get; private set; }
+        public static ConfigEntry<float> YawSprayPenaltyMult { get; private set; }
         public static ConfigEntry<float> WeightToPenaltyRecoveryModifier { get; private set; }
         public static ConfigEntry<float> WeightToPenaltyModifier { get; private set; }
         public static ConfigEntry<float> MaxSprayPenaltyMult { get; private set; }
@@ -64,10 +64,10 @@ namespace RecoilReworkClient.Config.Settings
             PitchSprayPenaltyMult = config.Bind(
                 category,
                 "Vertical Spray Penalty Multiplier",
-                new Vector2(-1.5f, 3.5f),
+                3f,
                 new ConfigDescription(
                     "Changes the maximum amount of vertical weapon deviation inflicted by the penalty system where X = minimum and Y = maximum multiplier at maximum penalty",
-                    null,
+                    new AcceptableValueRange<float>(0, 10),
                     new ConfigurationManagerAttributes { Order = 940 }
                 )
             );
@@ -75,10 +75,10 @@ namespace RecoilReworkClient.Config.Settings
             YawSprayPenaltyMult = config.Bind(
                 category,
                 "Horizontal Spray Penalty Multiplier",
-                new Vector2(-1.5f, 3.5f),
+                3f,
                 new ConfigDescription(
                     "Changes the maximum amount of horizontal weapon deviation inflicted by the penalty system where X = minimum and Y = maximum multiplier at maximum penalty",
-                    null,
+                    new AcceptableValueRange<float>(0, 10),
                     new ConfigurationManagerAttributes { Order = 935 }
                 )
             );
@@ -88,7 +88,7 @@ namespace RecoilReworkClient.Config.Settings
                 "Maximum Spray Penalty Amount",
                 1f,
                 new ConfigDescription(
-                    "Overall maximum multiplier of the penalty system.",
+                    "Overall ceiling of the penalty system.",
                     null,
                     new ConfigurationManagerAttributes { Order = 930 }
                 )

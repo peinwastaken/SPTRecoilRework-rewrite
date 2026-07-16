@@ -7,6 +7,7 @@ using RecoilReworkClient.Config.Settings;
 using RecoilReworkClient.Enum;
 using RecoilReworkClient.Helpers;
 using RecoilReworkClient.Models;
+using RecoilReworkClient.Physics;
 using System;
 using System.Reflection;
 using UnityEngine;
@@ -29,6 +30,7 @@ namespace RecoilReworkClient.Controllers
         public Spring WeaponKickSpring;
         public Spring WeaponPositionSpring;
         public Spring WeaponAngleSpring;
+        public SmoothNoise WeaponNoiseAngle;
 
         public Spring CameraPositionSpring;
         public Spring CameraAngleSpring;
@@ -51,9 +53,16 @@ namespace RecoilReworkClient.Controllers
         public float AngleSprayPenalty = 0f;
         public float AngleRecoverySpeed = 8f;
 
-        public float RecoilAngleSpeedWhileShooting = 0.5f;
-        public float RecoilAngleSpeedWhileIdle = 3f;
+        public float AutoCompensationAmount = 0f;
+        public float AutoCompensationRecoverySpeed = 8f;
+        public Weapon.EFireMode[] AutoCompensationFireModes =
+        [
+            Weapon.EFireMode.burst,
+            Weapon.EFireMode.fullauto
+        ];
+        
         public float PenaltyRecoveryDelayAfterShot = 0.2f;
+        public float AutoCompensationDelayAfterShot = 0.2f;
         
         /*
          * x - cam pos right
@@ -74,6 +83,8 @@ namespace RecoilReworkClient.Controllers
         private Quaternion _localRot = Quaternion.identity;
         private Quaternion _scopeRot = Quaternion.identity;
         private float _timeSinceLastShot = 0f;
+        private float _sprayPenaltyPitchModifier = 1f;
+        private float _sprayPenaltyYawModifier = 1f;
 
         private FieldInfo _adjustCollimatorsToTrajectoryField;
         private FieldInfo _hasPairOfIronsTransformsField;
@@ -111,6 +122,7 @@ namespace RecoilReworkClient.Controllers
             WeaponKickSpring = new Spring();
             WeaponPositionSpring = new Spring();
             WeaponAngleSpring = new Spring();
+            WeaponNoiseAngle = new SmoothNoise();
             
             CameraPositionSpring = new Spring();
             CameraAngleSpring = new Spring();
@@ -128,7 +140,7 @@ namespace RecoilReworkClient.Controllers
             WeaponAngleSpring.DampingRatio = 2f;
             WeaponAngleSpring.Frequency = 2f;
             WeaponAngleSpring.Mass = 1f;
-            WeaponAngleSpring.Speed = 0.5f;
+            WeaponAngleSpring.Speed = 1.3f;
 
             CameraAngleSpring.DampingRatio = 0.2f;
             CameraAngleSpring.Frequency = 5f;
@@ -154,50 +166,49 @@ namespace RecoilReworkClient.Controllers
             WeaponKickSpring.Update(dt);
             WeaponPositionSpring.Update(dt);
             WeaponAngleSpring.Update(dt);
+            WeaponNoiseAngle.Update(dt);
             
             CameraPositionSpring.Update(dt);
             CameraAngleSpring.Update(dt);
 
             if (CurrentWeapon == null) return;
-            bool isAutoFireOn = ProceduralWeaponAnimation.Shootingg.NewShotRecoil.AutoFireOn;
             bool isRecoilRecovering = IsRecoilRecovering();
-            Weapon.EFireMode fireMode = CurrentWeapon.FireMode.FireMode;
-            bool isWeaponBurstOrAuto = fireMode == Weapon.EFireMode.fullauto || fireMode == Weapon.EFireMode.burst;
             
             if (
                 !AngleSprayPenalty.ApproxEquals(0f) &&
                 isRecoilRecovering)
             {
-                AngleSprayPenalty = Mathf.Lerp(AngleSprayPenalty, 0f, AngleRecoverySpeed * Time.fixedDeltaTime);
+                AngleSprayPenalty = Mathf.Lerp(AngleSprayPenalty, 0f, AngleRecoverySpeed * Time.deltaTime);
             }
 
-            if (isWeaponBurstOrAuto && isAutoFireOn || !isWeaponBurstOrAuto && isRecoilRecovering)
+            if (!AutoCompensationAmount.ApproxEquals(0f) &&
+                isRecoilRecovering)
             {
-                WeaponAngleSpring.Speed = RecoilAngleSpeedWhileShooting;
+                AutoCompensationAmount = Mathf.Lerp(AutoCompensationAmount, 0f, AutoCompensationRecoverySpeed * Time.deltaTime);
+            }
+
+            if (ProceduralWeaponAnimation.IsAiming)
+            {
+                _sprayPenaltyPitchModifier = Mathf.Lerp(_sprayPenaltyPitchModifier, 0.3f, 5f * Time.deltaTime);
+                _sprayPenaltyYawModifier = Mathf.Lerp(_sprayPenaltyPitchModifier, 0.3f, 5f * Time.deltaTime);
             }
             else
             {
-                WeaponAngleSpring.Speed = RecoilAngleSpeedWhileIdle;
+                _sprayPenaltyPitchModifier = Mathf.Lerp(_sprayPenaltyPitchModifier, 1f, 5f * Time.deltaTime);
+                _sprayPenaltyYawModifier = Mathf.Lerp(_sprayPenaltyPitchModifier, 1f, 5f * Time.deltaTime);
             }
 
-            /*
-            if (!isWeaponBurstOrAuto)
-            {
-                WeaponAngleSpring.Speed = Mathf.Lerp(WeaponAngleSpring.Speed, RecoilAngleSpeedWhileShooting, 4f * dt);
-            }
-            else if (isRecoilRecovering)
-            {
-                WeaponAngleSpring.Speed = Mathf.Lerp(WeaponAngleSpring.Speed, RecoilAngleSpeedWhileIdle, 4f * dt);
-            }
-            else
-            {
-                WeaponAngleSpring.Speed = Mathf.Lerp(WeaponAngleSpring.Speed, RecoilAngleSpeedWhileShooting, 4f * dt);
-            }*/
+            WeaponNoiseAngle.Intensity = AngleSprayPenalty;
         }
 
         private bool IsRecoilRecovering()
         {
             return _timeSinceLastShot > PenaltyRecoveryDelayAfterShot;
+        }
+        
+        private bool IsAutoCompRecovering()
+        {
+            return _timeSinceLastShot > AutoCompensationDelayAfterShot;
         }
 
         public void RecalculateRecoilForces(ProceduralWeaponAnimation pwa, Weapon weapon)
@@ -270,6 +281,9 @@ namespace RecoilReworkClient.Controllers
             // calculate camera pitch/yaw visual recoil based on weapon backwards recoil amt
             camAng.x = PositionBackwardsForce * 4f;
             camAng.y = PositionBackwardsForce * 4f;
+            
+            // calculate vertical and horizontal kick based on weapon weight
+            KickPitchForce *= Mathf.Max(1 - MathF.Pow(totalWeight, 2) * 0.005f, 0.2f);
 
             if (IsBullpup || HasStock)
             {
@@ -327,7 +341,7 @@ namespace RecoilReworkClient.Controllers
             Vector3 recoilAngForce = new Vector3(-modifiedRecoilPitch, AngleRollForce, modifiedRecoilYaw);
             Vector3 recoilPosForce = new Vector3(PositionSidewaysForce, PositionBackwardsForce, -PositionUpwardsForce);
             
-            Vector3 camAngForce = new Vector3(Random.Range(-camAng.x, camAng.x), Random.Range(-camAng.y, camAng.y), camAng.z) * backwardsRecoilCamAngMult;
+            Vector3 camAngForce = new Vector3(0, 0, camAng.z) * backwardsRecoilCamAngMult;
             
             recoilKickForce.z *= Random.Range(-1f, 1f);
             recoilAngForce.z *= Random.Range(-1f, 1f);
@@ -356,20 +370,14 @@ namespace RecoilReworkClient.Controllers
 
             if (IsPistol)
             {
-                recoilKickForce.x *= 3f;
+                recoilKickForce.x *= 9f;
                 recoilKickForce.z *= 3f;
             }
             
-            recoilKickForce *= Random.Range(0.9f, 1.1f);
-
-            Vector2 cfgPitchPenalty = SprayPenaltySettings.PitchSprayPenaltyMult.Value;
-            Vector2 cfgYawPenalty = SprayPenaltySettings.YawSprayPenaltyMult.Value;
-
-            float pitchPenalty = AngleSprayPenalty * Random.Range(cfgPitchPenalty.x, cfgPitchPenalty.y);
-            float yawPenalty = AngleSprayPenalty * Random.Range(cfgYawPenalty.x, cfgYawPenalty.y);
+            recoilKickForce *= Random.Range(0.9f, 1.1f) * (1f - AutoCompensationAmount);
             
-            recoilAngForce.x += recoilAngForce.x * Random.Range(0f, pitchPenalty);
-            recoilAngForce.z += recoilAngForce.z * Random.Range(-yawPenalty, yawPenalty);
+            recoilAngForce.x += recoilAngForce.x;
+            recoilAngForce.z += recoilAngForce.z;
 
             recoilKickForce = Vector3.Scale(recoilKickForce, OnShotSettings.FinalWeaponKickMult.Value);
             recoilKickForce.y *= Random.Range(0.5f, 1.5f);
@@ -390,6 +398,8 @@ namespace RecoilReworkClient.Controllers
                 AngleSprayPenalty += (1f - Mathf.Exp(-CurrentWeapon.TotalWeight * SprayPenaltySettings.WeightToPenaltyModifier.Value)) * caliberEnergy * stancePenaltyMult * adsPenaltyMult * mountPenaltyMult;
                 AngleSprayPenalty = Mathf.Clamp(AngleSprayPenalty, 0f, SprayPenaltySettings.MaxSprayPenaltyMult.Value);
             }
+
+            AutoCompensationAmount = Mathf.Clamp(AutoCompensationAmount + 0.05f, 0f, 0.5f);
         }
 
         public void ApplyComplexRotation(ProceduralWeaponAnimation pwa)
@@ -418,20 +428,14 @@ namespace RecoilReworkClient.Controllers
             // do recoil angle
             DeferredRotateCustomOrder(pwa, recoilPivot, WeaponAngleSpring.Position);
             
+            // do spray penalty
+            float verticalNoise = WeaponNoiseAngle.Position.x * _sprayPenaltyPitchModifier * SprayPenaltySettings.PitchSprayPenaltyMult.Value;
+            float horizontalNoise = WeaponNoiseAngle.Position.y * _sprayPenaltyYawModifier * SprayPenaltySettings.PitchSprayPenaltyMult.Value;
+            Vector3 sprayPenalty = new Vector3(verticalNoise, 0, horizontalNoise);
+            DeferredRotateCustomOrder(pwa, recoilPivot, sprayPenalty);
+            
             // do recoil position
-            Vector3 up = _tempRot * Vector3.up;
             Vector3 recoilOffset = _tempRot * WeaponPositionSpring.Position;
-
-// Component moving toward camera
-            float towardCamera = Vector3.Dot(recoilOffset, -up);
-
-// Only compress when moving toward camera
-            if (towardCamera > 0f)
-            {
-                // Soft compression curve
-                float compressed = towardCamera / (1f + towardCamera * 0.35f);
-                recoilOffset += up * (towardCamera - compressed);
-            }
 
             _tempPos += recoilOffset;
             
@@ -534,6 +538,7 @@ namespace RecoilReworkClient.Controllers
             
             GUILayout.Label("Recoil parameters", header);
             GUILayout.Label($"Spray Penalty: {AngleSprayPenalty:F2}");
+            GUILayout.Label($"Weapon Noise Angle: {WeaponNoiseAngle.Position.x * AngleSprayPenalty}, {WeaponNoiseAngle.Position.y * AngleSprayPenalty}");
             GUILayout.Label($"Penalty Recovery Speed: {AngleRecoverySpeed:F2}");
             GUILayout.EndVertical();
             

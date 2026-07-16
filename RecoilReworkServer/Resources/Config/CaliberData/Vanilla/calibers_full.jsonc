@@ -36,8 +36,8 @@
     },
     "Caliber762x54R": {
         // 7.62x54r, mosin / pkm
-        "BaseVerticalKick": 55,
-        "BaseHorizontalKick": 37,
+        "BaseVerticalKick": 30,
+        "BaseHorizontalKick": 16,
         "BaseRollKick": 210,
         "BaseBackwardsRecoil": 5.5
     },
