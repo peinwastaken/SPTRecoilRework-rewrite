@@ -19,7 +19,7 @@ namespace RecoilReworkClient.Config.Settings
             EnableAngleFollow = config.Bind(
                 category,
                 "Enable Camera Recoil",
-                false,
+                true,
                 new ConfigDescription(
                     "Changes if the camera rotation should follow the angle recoil of the weapon.",
                     null,
