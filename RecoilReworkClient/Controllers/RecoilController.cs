@@ -197,8 +197,8 @@ namespace RecoilReworkClient.Controllers
             }
             else
             {
-                _sprayPenaltyPitchModifier = Mathf.Lerp(_sprayPenaltyPitchModifier, 1f, 5f * Time.deltaTime);
-                _sprayPenaltyYawModifier = Mathf.Lerp(_sprayPenaltyPitchModifier, 1f, 5f * Time.deltaTime);
+                _sprayPenaltyPitchModifier = Mathf.Lerp(_sprayPenaltyPitchModifier, 0.5f, 5f * Time.deltaTime);
+                _sprayPenaltyYawModifier = Mathf.Lerp(_sprayPenaltyPitchModifier, 0.5f, 5f * Time.deltaTime);
             }
         }
 
@@ -418,6 +418,8 @@ namespace RecoilReworkClient.Controllers
             Vector3 handsRot = pwa.HandsContainer.HandsRotation.Get();
             Vector3 handSway = pwa.HandsContainer.SwaySpring.Value;
             Vector3 pivot = pwa.HandsContainer.WeaponRootAnim.TransformPoint(pwa.HandsContainer.RotationCenter);
+            // wtf bsg
+            Vector3 tremorOffset = pwa.Shootingg.CurrentRecoilEffect.HandRotationRecoilEffect.Offset;
 
             handsRot += displacementStr * (pwa.IsAiming ? pwa.AimingDisplacementStr : 1f) * new Vector3(handSway.x, 0f, handSway.z);
             handsRot += handSway;
@@ -440,6 +442,9 @@ namespace RecoilReworkClient.Controllers
             
             // do recoil position
             Vector3 recoilOffset = _tempRot * WeaponPositionSpring.Position;
+            
+            // do tremor rotation
+            DeferredRotateCustomOrder(pwa, recoilPivot, tremorOffset);
 
             _tempPos += recoilOffset;
             
