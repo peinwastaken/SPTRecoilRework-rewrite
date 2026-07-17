@@ -48,6 +48,8 @@ namespace RecoilReworkClient
             new MovementContextToggleStancePatch().Enable();
             new FirearmControllerChangeStancePatch().Enable();
             new MovementContextSetLeftStancePatch().Enable();
+            new MountedWeaponCameraPatch().Enable();
+            // new ProcessEffectorsPatch().Enable();
             // new DisableLeftStanceFromBodyPatch().Enable();
             // new DisableLeftStanceFromHandsPatch().Enable();
             // new DisableLeftStanceFromInventoryPatch().Enable();

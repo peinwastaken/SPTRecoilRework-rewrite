@@ -16,5 +16,16 @@ namespace RecoilReworkClient.Helpers
                 _ => 1f
             };
         }
+
+        public static float GetStanceAngleRecoilMultiplier(EPlayerPose pose)
+        {
+            return pose switch
+            {
+                EPlayerPose.Stand => StanceSettings.StandAngleRecoilMult.Value,
+                EPlayerPose.Duck => StanceSettings.CrouchAngleRecoilMult.Value,
+                EPlayerPose.Prone => StanceSettings.ProneAngleRecoilMult.Value,
+                _ => 1f
+            };
+        }
     }
 }

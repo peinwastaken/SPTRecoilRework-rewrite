@@ -326,7 +326,14 @@ namespace RecoilReworkClient.Controllers
             ProceduralWeaponAnimation pwa = Player.ProceduralWeaponAnimation;
             float stancePenaltyMult = PlayerHelper.GetStanceMultiplier(Player.Pose);
             float adsPenaltyMult = pwa.IsAiming ? StanceSettings.AimingPenaltyMult.Value : StanceSettings.HipfirePenaltyMult.Value;
-            float mountPenaltyMult = pwa.IsMountedState || pwa.IsVerticalMounting ? StanceSettings.MountPenaltyMult.Value : 1f;
+            float stockPenaltyMult = hasStock ? 1f : 2f;
+            bool isMounted = pwa.IsMountedState || pwa.IsVerticalMounting;
+            float mountPenaltyMult = isMounted ? StanceSettings.MountPenaltyMult.Value : 1f;
+
+            float stanceAngleRecoilMult = PlayerHelper.GetStanceAngleRecoilMultiplier(Player.Pose);
+            float adsAngleRecoilMult = pwa.IsAiming ? StanceSettings.AimingAngleRecoilMult.Value : StanceSettings.HipfireAngleRecoilMult.Value;
+            float mountAngleRecoilMult = isMounted ? StanceSettings.MountAngleRecoilMult.Value : 1f;
+            float angleRecoilStateMult = stanceAngleRecoilMult * adsAngleRecoilMult * mountAngleRecoilMult;
             
             float ammoRecoilModifier = (CurrentWeapon.CurrentAmmoTemplate?.ammoRec ?? 0f) * OnShotSettings.AmmoModifierMult.Value;
 
@@ -337,7 +344,7 @@ namespace RecoilReworkClient.Controllers
             float kickRoll = KickRollForce * Random.Range(0.7f, 1f);
             
             Vector3 recoilKickForce = new Vector3(-KickPitchForce, kickRoll, KickYawForce);
-            Vector3 recoilAngForce = new Vector3(-modifiedRecoilPitch, AngleRollForce, modifiedRecoilYaw);
+            Vector3 recoilAngForce = new Vector3(-modifiedRecoilPitch, AngleRollForce, modifiedRecoilYaw) * angleRecoilStateMult;
             Vector3 recoilPosForce = new Vector3(PositionSidewaysForce, PositionBackwardsForce, -PositionUpwardsForce);
             
             Vector3 camAngForce = new Vector3(0, 0, camAng.z) * backwardsRecoilCamAngMult;
@@ -391,7 +398,7 @@ namespace RecoilReworkClient.Controllers
             if (SprayPenaltySettings.EnableSprayPenalty.Value)
             {
                 float caliberEnergy = new Vector2(CurrentCaliberData.BaseVerticalKick, CurrentCaliberData.BaseHorizontalKick).magnitude * 0.01f * SprayPenaltySettings.CaliberEnergyToPenaltyModifier.Value;
-                AngleSprayPenalty += (1f - Mathf.Exp(-CurrentWeapon.TotalWeight * SprayPenaltySettings.WeightToPenaltyModifier.Value)) * caliberEnergy * stancePenaltyMult * adsPenaltyMult * mountPenaltyMult;
+                AngleSprayPenalty += (1f - Mathf.Exp(-CurrentWeapon.TotalWeight * SprayPenaltySettings.WeightToPenaltyModifier.Value)) * stockPenaltyMult * caliberEnergy * stancePenaltyMult * adsPenaltyMult * mountPenaltyMult;
                 AngleSprayPenalty = Mathf.Clamp(AngleSprayPenalty, 0f, SprayPenaltySettings.MaxSprayPenaltyMult.Value);
             }
 
