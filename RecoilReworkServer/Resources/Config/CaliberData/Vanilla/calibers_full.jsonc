@@ -1,51 +1,51 @@
 {
     "Caliber762x39": {
         // 7.62x39 (baseline)
-        "BaseVerticalKick": 40,
-        "BaseHorizontalKick": 30,
-        "BaseRollKick": 250,
+        "BaseVerticalKick": 34,
+        "BaseHorizontalKick": 17,
+        "BaseRollKick": 200,
         "BaseBackwardsRecoil": 4
     },
     "Caliber9x39": {
         // 9x39, as-val / vss
-        "BaseVerticalKick": 25,
-        "BaseHorizontalKick": 20,
-        "BaseRollKick": 120,
-        "BaseBackwardsRecoil": 2.2
+        "BaseVerticalKick": 24,
+        "BaseHorizontalKick": 12,
+        "BaseRollKick": 130,
+        "BaseBackwardsRecoil": 2.6
     },
     "Caliber762x35": {
         // .300 blackout, mcx
-        "BaseVerticalKick": 30,
-        "BaseHorizontalKick": 15,
-        "BaseRollKick": 200,
-        "BaseBackwardsRecoil": 4
+        "BaseVerticalKick": 29,
+        "BaseHorizontalKick": 14,
+        "BaseRollKick": 160,
+        "BaseBackwardsRecoil": 3.2
     },
     "Caliber366TKM": {
         // .366 tkm, vpo
-        "BaseVerticalKick": 45,
-        "BaseHorizontalKick": 35,
+        "BaseVerticalKick": 38,
+        "BaseHorizontalKick": 19,
         "BaseRollKick": 200,
-        "BaseBackwardsRecoil": 4
+        "BaseBackwardsRecoil": 4.3
     },
     "Caliber762x51": {
         // 7.62x51 nato, sr-25
-        "BaseVerticalKick": 45,
-        "BaseHorizontalKick": 30,
-        "BaseRollKick": 210,
-        "BaseBackwardsRecoil": 5.5
+        "BaseVerticalKick": 46,
+        "BaseHorizontalKick": 23,
+        "BaseRollKick": 200,
+        "BaseBackwardsRecoil": 5.2
     },
     "Caliber762x54R": {
         // 7.62x54r, mosin / pkm
-        "BaseVerticalKick": 30,
-        "BaseHorizontalKick": 16,
-        "BaseRollKick": 210,
-        "BaseBackwardsRecoil": 5.5
+        "BaseVerticalKick": 50,
+        "BaseHorizontalKick": 25,
+        "BaseRollKick": 200,
+        "BaseBackwardsRecoil": 5.6
     },
     "Caliber68x51": {
         // 6.8x51, spear
-        "BaseVerticalKick": 45,
-        "BaseHorizontalKick": 30,
+        "BaseVerticalKick": 44,
+        "BaseHorizontalKick": 22,
         "BaseRollKick": 200,
-        "BaseBackwardsRecoil": 4.0
+        "BaseBackwardsRecoil": 4.8
     }
 }

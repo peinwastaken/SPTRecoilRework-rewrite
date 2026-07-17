@@ -1,9 +1,9 @@
 {
     "Fallback": {
         // default if caliber not found
-        "BaseVerticalKick": 35,
-        "BaseHorizontalKick": 25,
-        "BaseRollKick": 50,
-        "BaseBackwardsRecoil": 1.5
+        "BaseVerticalKick": 30,
+        "BaseHorizontalKick": 15,
+        "BaseRollKick": 160,
+        "BaseBackwardsRecoil": 3.2
     }
 }

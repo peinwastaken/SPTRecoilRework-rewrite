@@ -105,7 +105,7 @@ namespace RecoilReworkClient.Helpers
             return modifierData != null && modifierData.IsBullpup;
         }
 
-        public static float GetRecoilReduction(this Weapon weapon)
+        public static float GetAttachmentRecoilReduction(this Weapon weapon)
         {
             float recoilReduction = 0f;
 

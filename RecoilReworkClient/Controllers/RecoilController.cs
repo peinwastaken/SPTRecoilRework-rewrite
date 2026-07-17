@@ -1,17 +1,14 @@
-using BepInEx.Configuration;
 using EFT;
 using EFT.Animations;
 using EFT.InventoryLogic;
 using HarmonyLib;
 using RecoilReworkClient.Config.Settings;
-using RecoilReworkClient.Enum;
 using RecoilReworkClient.Helpers;
 using RecoilReworkClient.Models;
 using RecoilReworkClient.Physics;
 using System;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 using Spring = RecoilReworkClient.Physics.Spring;
 
@@ -142,10 +139,10 @@ namespace RecoilReworkClient.Controllers
             WeaponAngleSpring.Mass = 1f;
             WeaponAngleSpring.Speed = 1.3f;
 
-            CameraAngleSpring.DampingRatio = 0.2f;
+            CameraAngleSpring.DampingRatio = 0.4f;
             CameraAngleSpring.Frequency = 5f;
             CameraAngleSpring.Mass = 1f;
-            CameraAngleSpring.Speed = 1.5f;
+            CameraAngleSpring.Speed = 1f;
 
             CameraPositionSpring.DampingRatio = 1f;
             CameraPositionSpring.Frequency = 5f;
@@ -254,17 +251,15 @@ namespace RecoilReworkClient.Controllers
             AngleYawForce = horizontalAngle + horizontalAngle * weapon.RecoilDelta;
             */
 
-            float recoilReduction = weapon.GetRecoilReduction();
-            AnglePitchForce = verticalAngle * Mathf.Clamp01(1f + recoilReduction);
-            AngleYawForce = horizontalAngle * Mathf.Clamp01(1f + recoilReduction);
+            // calculate angle pitch reduction from attachments and weapon weight
+            float maxKg = 15f;
+            float weightDelta = Mathf.Clamp01(totalWeight / maxKg);
+            float angleWeightMult = 1f / (1f + ((1f / 0.25f) - 1f) * Mathf.Pow(weightDelta, 3f)); // holy magic numbers
+            float attachmentReduction = weapon.GetAttachmentRecoilReduction();
+            AnglePitchForce = verticalAngle * Mathf.Clamp01(1f + attachmentReduction) * angleWeightMult;
+            AngleYawForce = horizontalAngle * Mathf.Clamp01(1f + attachmentReduction) * angleWeightMult;
             
             PositionBackwardsForce = backwardsRecoilClamped;
-
-            // calculate weapon kick damping
-            float baseKickDamping = 0.3f;
-            float kickWeightCoefficient = 0.02f;
-            float finalKickDamping = baseKickDamping + (totalWeight * kickWeightCoefficient);
-            WeaponKickSpring.DampingRatio = finalKickDamping;
             
             // calculate position spring damping and frequency from caliber backwards force
             float baseBackwardsFrequency = 5f;
@@ -375,9 +370,6 @@ namespace RecoilReworkClient.Controllers
             }
             
             recoilKickForce *= Random.Range(0.9f, 1.1f) * (1f - AutoCompensationAmount);
-            
-            recoilAngForce.x += recoilAngForce.x;
-            recoilAngForce.z += recoilAngForce.z;
 
             recoilKickForce = Vector3.Scale(recoilKickForce, OnShotSettings.FinalWeaponKickMult.Value);
             recoilKickForce.y *= Random.Range(0.5f, 1.5f);

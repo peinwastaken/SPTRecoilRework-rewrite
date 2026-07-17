@@ -1,30 +1,30 @@
 {
     "Caliber127x55": {
         // 12.7x55, ash-12
-        "BaseVerticalKick": 55,
-        "BaseHorizontalKick": 37,
-        "BaseRollKick": 250,
-        "BaseBackwardsRecoil": 6.5
+        "BaseVerticalKick": 54,
+        "BaseHorizontalKick": 27,
+        "BaseRollKick": 200,
+        "BaseBackwardsRecoil": 6.2
     },
     "Caliber86x70": {
         // .338 lapua, axmc / mk-18
-        "BaseVerticalKick": 100,
-        "BaseHorizontalKick": 80,
-        "BaseRollKick": 350,
-        "BaseBackwardsRecoil": 9
+        "BaseVerticalKick": 82,
+        "BaseHorizontalKick": 41,
+        "BaseRollKick": 200,
+        "BaseBackwardsRecoil": 8
     },
     "Caliber127x108": {
         // 12.7x108, utyos
-        "BaseVerticalKick": 80,
-        "BaseHorizontalKick": 80,
-        "BaseRollKick": 120,
-        "BaseBackwardsRecoil": 7
+        "BaseVerticalKick": 88,
+        "BaseHorizontalKick": 44,
+        "BaseRollKick": 200,
+        "BaseBackwardsRecoil": 8
     },
     "Caliber127x99": {
         // .50 bmg, ak50 / barret (wtt-armory)
-        "BaseVerticalKick": 120,
-        "BaseHorizontalKick": 50,
-        "BaseRollKick": 500,
-        "BaseBackwardsRecoil": 10
+        "BaseVerticalKick": 105,
+        "BaseHorizontalKick": 52,
+        "BaseRollKick": 200,
+        "BaseBackwardsRecoil": 8
     }
 }
