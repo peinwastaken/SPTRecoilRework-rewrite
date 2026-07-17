@@ -28,6 +28,7 @@ namespace RecoilReworkClient.Controllers
         public Spring WeaponPositionSpring;
         public Spring WeaponAngleSpring;
         public SmoothNoise WeaponNoiseAngle;
+        public SmoothNoise WeaponRollNoiseAngle;
 
         public Spring CameraPositionSpring;
         public Spring CameraAngleSpring;
@@ -82,6 +83,7 @@ namespace RecoilReworkClient.Controllers
         private float _timeSinceLastShot = 0f;
         private float _sprayPenaltyPitchModifier = 1f;
         private float _sprayPenaltyYawModifier = 1f;
+        private float _maxWeaponRollNoiseAng = 3f;
 
         private FieldInfo _adjustCollimatorsToTrajectoryField;
         private FieldInfo _hasPairOfIronsTransformsField;
@@ -120,6 +122,7 @@ namespace RecoilReworkClient.Controllers
             WeaponPositionSpring = new Spring();
             WeaponAngleSpring = new Spring();
             WeaponNoiseAngle = new SmoothNoise();
+            WeaponRollNoiseAngle = new SmoothNoise();
             
             CameraPositionSpring = new Spring();
             CameraAngleSpring = new Spring();
@@ -149,6 +152,8 @@ namespace RecoilReworkClient.Controllers
             CameraPositionSpring.Mass = 1f;
             CameraPositionSpring.Speed = 1f;
 
+            WeaponRollNoiseAngle.Speed = 2f;
+
             _debugOverlayBg = new Texture2D(1, 1);
             _debugOverlayBg.SetPixel(0, 0, new Color(0f, 0f, 0f, 0.5f));
             _debugOverlayBg.Apply();
@@ -164,6 +169,7 @@ namespace RecoilReworkClient.Controllers
             WeaponPositionSpring.Update(dt);
             WeaponAngleSpring.Update(dt);
             WeaponNoiseAngle.Update(dt);
+            WeaponRollNoiseAngle.Update(dt);
             
             CameraPositionSpring.Update(dt);
             CameraAngleSpring.Update(dt);
@@ -194,8 +200,6 @@ namespace RecoilReworkClient.Controllers
                 _sprayPenaltyPitchModifier = Mathf.Lerp(_sprayPenaltyPitchModifier, 1f, 5f * Time.deltaTime);
                 _sprayPenaltyYawModifier = Mathf.Lerp(_sprayPenaltyPitchModifier, 1f, 5f * Time.deltaTime);
             }
-
-            WeaponNoiseAngle.Intensity = AngleSprayPenalty;
         }
 
         private bool IsRecoilRecovering()
@@ -420,10 +424,11 @@ namespace RecoilReworkClient.Controllers
             // do recoil angle
             DeferredRotateCustomOrder(pwa, recoilPivot, WeaponAngleSpring.Position);
             
-            // do spray penalty
-            float verticalNoise = WeaponNoiseAngle.Position.x * _sprayPenaltyPitchModifier * SprayPenaltySettings.PitchSprayPenaltyMult.Value;
-            float horizontalNoise = WeaponNoiseAngle.Position.y * _sprayPenaltyYawModifier * SprayPenaltySettings.PitchSprayPenaltyMult.Value;
-            Vector3 sprayPenalty = new Vector3(verticalNoise, 0, horizontalNoise);
+            // do spray penalty and roll
+            float verticalNoise = WeaponNoiseAngle.Position.x * AngleSprayPenalty * _sprayPenaltyPitchModifier * SprayPenaltySettings.PitchSprayPenaltyMult.Value;
+            float horizontalNoise = WeaponNoiseAngle.Position.y * AngleSprayPenalty * _sprayPenaltyYawModifier * SprayPenaltySettings.PitchSprayPenaltyMult.Value;
+            float rollNoise = _maxWeaponRollNoiseAng * WeaponRollNoiseAngle.Position.x * AngleSprayPenalty * _sprayPenaltyPitchModifier * SprayPenaltySettings.YawSprayPenaltyMult.Value;
+            Vector3 sprayPenalty = new Vector3(verticalNoise, -rollNoise, horizontalNoise);
             DeferredRotateCustomOrder(pwa, recoilPivot, sprayPenalty);
             
             // do recoil position
