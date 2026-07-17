@@ -43,7 +43,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Same as above but when your weapon has no stock.",
                     new AcceptableValueRange<float>(0.01f, 10f),
-                    new ConfigurationManagerAttributes { Order = 985, IsAdvanced = true }
+                    new ConfigurationManagerAttributes { Order = 980, IsAdvanced = true }
                 )
             );
             
@@ -54,7 +54,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Pistol camera snap speed, speed at which the camera's position adjusts to follow the weapon's rotational recoil",
                     new AcceptableValueRange<float>(0.01f, 10f),
-                    new ConfigurationManagerAttributes { Order = 980, IsAdvanced = true }
+                    new ConfigurationManagerAttributes { Order = 970, IsAdvanced = true }
                 )
             );
         }

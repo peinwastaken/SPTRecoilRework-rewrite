@@ -21,7 +21,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Weapon kick to angle recoil multiplier. Multiplier for the amount of base angle recoil based on the amount of caliber kick",
                     new AcceptableValueRange<float>(0.01f, 10f),
-                    new ConfigurationManagerAttributes { Order = 970, IsAdvanced = true }
+                    new ConfigurationManagerAttributes { Order = 1000, IsAdvanced = true }
                 )
             );
 
@@ -32,7 +32,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Changes the modifier for backwards caliber force converted to additional weapon angle recoil",
                     null,
-                    new ConfigurationManagerAttributes { Order = 965, IsAdvanced = true }
+                    new ConfigurationManagerAttributes { Order = 990, IsAdvanced = true }
                 )
             );
 
@@ -43,7 +43,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Changes the weapon kick multiplier. Think of this like a global recoil multiplier as angle recoil is calculated from the caliber's kick value. Per shot kick multiplier can be changed below.",
                     null,
-                    new ConfigurationManagerAttributes { Order = 960, IsAdvanced = true }
+                    new ConfigurationManagerAttributes { Order = 980, IsAdvanced = true }
                 )
             );
             
@@ -54,7 +54,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Changes the weapon angle recoil multiplier",
                     null,
-                    new ConfigurationManagerAttributes { Order = 955, IsAdvanced = true }
+                    new ConfigurationManagerAttributes { Order = 970, IsAdvanced = true }
                 )
             );
         }

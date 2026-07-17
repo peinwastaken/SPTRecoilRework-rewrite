@@ -32,6 +32,10 @@ namespace RecoilReworkClient.Controllers
 
         public Spring CameraPositionSpring;
         public Spring CameraAngleSpring;
+
+        public bool EnableCameraAngleFollow = true;
+        public float CameraAngleFollowPitchMultiplier = 1f;
+        public float CameraAngleFollowYawMultiplier = -1f;
         
         public float recoilPosInverseMult = 0.02f;
         public float recoilBackPosCamVertOffsetMult = 1f;
@@ -165,6 +169,9 @@ namespace RecoilReworkClient.Controllers
             
             _timeSinceLastShot += dt;
 
+            EnableCameraAngleFollow = CameraRecoilSettings.EnableAngleFollow.Value;
+            CameraAngleFollowPitchMultiplier = CameraRecoilSettings.CameraRecoilPitchMultiplier.Value;
+            CameraAngleFollowYawMultiplier = CameraRecoilSettings.CameraRecoilYawMultiplier.Value;
             CameraAngleSpring.DampingRatio = CameraRecoilSettings.AngleSpringDampingRatio.Value;
             CameraAngleSpring.Frequency = CameraRecoilSettings.AngleSpringFrequency.Value;
             
@@ -173,6 +180,13 @@ namespace RecoilReworkClient.Controllers
             WeaponAngleSpring.Update(dt);
             WeaponNoiseAngle.Update(dt);
             WeaponRollNoiseAngle.Update(dt);
+
+            CameraAngleSpring.Target = EnableCameraAngleFollow
+                ? new Vector3(
+                    WeaponAngleSpring.Position.x * CameraAngleFollowPitchMultiplier,
+                    WeaponAngleSpring.Position.z * CameraAngleFollowYawMultiplier,
+                    0)
+                : Vector3.zero;
             
             CameraPositionSpring.Update(dt);
             CameraAngleSpring.Update(dt);
@@ -352,7 +366,7 @@ namespace RecoilReworkClient.Controllers
             
             Vector3 camAngForce = Vector3.Scale(
                 new Vector3(0, 0, camAng.z),
-                CameraRecoilSettings.AngleImpulseMultiplier.Value) * backwardsRecoilCamAngMult;
+                CameraRecoilSettings.CameraRecoilImpulseMultiplier.Value) * backwardsRecoilCamAngMult;
             
             recoilKickForce.z *= Random.Range(-1f, 1f);
             recoilAngForce.z *= Random.Range(-1f, 1f);
@@ -439,9 +453,9 @@ namespace RecoilReworkClient.Controllers
             DeferredRotateCustomOrder(pwa, recoilPivot, WeaponAngleSpring.Position);
             
             // do spray penalty and roll
-            float verticalNoise = WeaponNoiseAngle.Position.x * AngleSprayPenalty * _sprayPenaltyPitchModifier * SprayPenaltySettings.PitchSprayPenaltyMult.Value;
-            float horizontalNoise = WeaponNoiseAngle.Position.y * AngleSprayPenalty * _sprayPenaltyYawModifier * SprayPenaltySettings.PitchSprayPenaltyMult.Value;
-            float rollNoise = _maxWeaponRollNoiseAng * WeaponRollNoiseAngle.Position.x * AngleSprayPenalty * _sprayPenaltyPitchModifier * SprayPenaltySettings.YawSprayPenaltyMult.Value;
+            float verticalNoise = WeaponNoiseAngle.Position.x * AngleSprayPenalty * _sprayPenaltyPitchModifier * SprayPenaltySettings.RecoilSprayPenaltyMult.Value;
+            float horizontalNoise = WeaponNoiseAngle.Position.y * AngleSprayPenalty * _sprayPenaltyYawModifier * SprayPenaltySettings.RecoilSprayPenaltyMult.Value;
+            float rollNoise = _maxWeaponRollNoiseAng * WeaponRollNoiseAngle.Position.x * AngleSprayPenalty * _sprayPenaltyPitchModifier * SprayPenaltySettings.RollSprayPenaltyMult.Value;
             Vector3 sprayPenalty = new Vector3(verticalNoise, -rollNoise, horizontalNoise);
             DeferredRotateCustomOrder(pwa, recoilPivot, sprayPenalty);
             

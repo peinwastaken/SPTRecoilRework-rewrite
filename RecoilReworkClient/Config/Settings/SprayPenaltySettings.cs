@@ -6,8 +6,8 @@ namespace RecoilReworkClient.Config.Settings
     public static class SprayPenaltySettings
     {
         public static ConfigEntry<bool> EnableSprayPenalty { get; private set; }
-        public static ConfigEntry<float> PitchSprayPenaltyMult { get; private set; }
-        public static ConfigEntry<float> YawSprayPenaltyMult { get; private set; }
+        public static ConfigEntry<float> RecoilSprayPenaltyMult { get; private set; }
+        public static ConfigEntry<float> RollSprayPenaltyMult { get; private set; }
         public static ConfigEntry<float> WeightToPenaltyRecoveryModifier { get; private set; }
         public static ConfigEntry<float> WeightToPenaltyModifier { get; private set; }
         public static ConfigEntry<float> MaxSprayPenaltyMult { get; private set; }
@@ -35,7 +35,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Changes the weapon weight to penalty recovery curve modifier",
                     new AcceptableValueRange<float>(0.01f, 10f),
-                    new ConfigurationManagerAttributes { Order = 950, IsAdvanced = true }
+                    new ConfigurationManagerAttributes { Order = 990, IsAdvanced = true }
                 )
             );
             
@@ -46,7 +46,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Changes the weapon weight to penalty increase curve modifier",
                     new AcceptableValueRange<float>(0.01f, 10f),
-                    new ConfigurationManagerAttributes { Order = 945, IsAdvanced = true }
+                    new ConfigurationManagerAttributes { Order = 980, IsAdvanced = true }
                 )
             );
             
@@ -57,29 +57,29 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Changes the caliber energy to penalty per shot modifier",
                     new AcceptableValueRange<float>(0.01f, 10f),
-                    new ConfigurationManagerAttributes { Order = 944, IsAdvanced = true }
+                    new ConfigurationManagerAttributes { Order = 970, IsAdvanced = true }
                 )
             );
             
-            PitchSprayPenaltyMult = config.Bind(
+            RecoilSprayPenaltyMult = config.Bind(
                 category,
-                "Vertical Spray Penalty Multiplier",
+                "Recoil Spray Penalty Multiplier",
                 3f,
                 new ConfigDescription(
-                    "Changes the maximum amount of vertical weapon deviation inflicted by the penalty system where X = minimum and Y = maximum multiplier at maximum penalty",
+                    "Changes the amount of weapon deviation added by the spray penalty system.",
                     new AcceptableValueRange<float>(0, 10),
-                    new ConfigurationManagerAttributes { Order = 940, IsAdvanced = true }
+                    new ConfigurationManagerAttributes { Order = 960, IsAdvanced = true }
                 )
             );
             
-            YawSprayPenaltyMult = config.Bind(
+            RollSprayPenaltyMult = config.Bind(
                 category,
                 "Horizontal Spray Penalty Multiplier",
                 3f,
                 new ConfigDescription(
-                    "Changes the maximum amount of horizontal weapon deviation inflicted by the penalty system where X = minimum and Y = maximum multiplier at maximum penalty",
+                    "Changes the amount of weapon rolling added by the spray penalty system.",
                     new AcceptableValueRange<float>(0, 10),
-                    new ConfigurationManagerAttributes { Order = 935, IsAdvanced = true }
+                    new ConfigurationManagerAttributes { Order = 950, IsAdvanced = true }
                 )
             );
             
@@ -90,7 +90,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Overall ceiling of the penalty system.",
                     null,
-                    new ConfigurationManagerAttributes { Order = 930, IsAdvanced = true }
+                    new ConfigurationManagerAttributes { Order = 940, IsAdvanced = true }
                 )
             );
         }
