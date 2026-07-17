@@ -8,6 +8,7 @@
         public static string ShotBehavior = "Firing Behavior";
         public static string SprayPenalty = "Spray Penalty";
         public static string Stance = "Stance Multipliers";
+        public static string CameraRecoil = "Camera Recoil";
 
         public static string Format(int order, string category) => $"{order:D2}. {category}";
     }

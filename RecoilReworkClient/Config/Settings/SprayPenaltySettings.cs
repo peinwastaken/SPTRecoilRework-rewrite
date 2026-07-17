@@ -35,7 +35,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Changes the weapon weight to penalty recovery curve modifier",
                     new AcceptableValueRange<float>(0.01f, 10f),
-                    new ConfigurationManagerAttributes { Order = 950 }
+                    new ConfigurationManagerAttributes { Order = 950, IsAdvanced = true }
                 )
             );
             
@@ -46,7 +46,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Changes the weapon weight to penalty increase curve modifier",
                     new AcceptableValueRange<float>(0.01f, 10f),
-                    new ConfigurationManagerAttributes { Order = 945 }
+                    new ConfigurationManagerAttributes { Order = 945, IsAdvanced = true }
                 )
             );
             
@@ -57,7 +57,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Changes the caliber energy to penalty per shot modifier",
                     new AcceptableValueRange<float>(0.01f, 10f),
-                    new ConfigurationManagerAttributes { Order = 944 }
+                    new ConfigurationManagerAttributes { Order = 944, IsAdvanced = true }
                 )
             );
             
@@ -68,7 +68,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Changes the maximum amount of vertical weapon deviation inflicted by the penalty system where X = minimum and Y = maximum multiplier at maximum penalty",
                     new AcceptableValueRange<float>(0, 10),
-                    new ConfigurationManagerAttributes { Order = 940 }
+                    new ConfigurationManagerAttributes { Order = 940, IsAdvanced = true }
                 )
             );
             
@@ -79,18 +79,18 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Changes the maximum amount of horizontal weapon deviation inflicted by the penalty system where X = minimum and Y = maximum multiplier at maximum penalty",
                     new AcceptableValueRange<float>(0, 10),
-                    new ConfigurationManagerAttributes { Order = 935 }
+                    new ConfigurationManagerAttributes { Order = 935, IsAdvanced = true }
                 )
             );
             
             MaxSprayPenaltyMult = config.Bind(
                 category,
                 "Maximum Spray Penalty Amount",
-                1f,
+                2f,
                 new ConfigDescription(
                     "Overall ceiling of the penalty system.",
                     null,
-                    new ConfigurationManagerAttributes { Order = 930 }
+                    new ConfigurationManagerAttributes { Order = 930, IsAdvanced = true }
                 )
             );
         }

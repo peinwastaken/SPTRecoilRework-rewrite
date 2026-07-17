@@ -142,8 +142,8 @@ namespace RecoilReworkClient.Controllers
             WeaponAngleSpring.Mass = 1f;
             WeaponAngleSpring.Speed = 1.3f;
 
-            CameraAngleSpring.DampingRatio = 0.4f;
-            CameraAngleSpring.Frequency = 5f;
+            CameraAngleSpring.DampingRatio = CameraRecoilSettings.AngleSpringDampingRatio.Value;
+            CameraAngleSpring.Frequency = CameraRecoilSettings.AngleSpringFrequency.Value;
             CameraAngleSpring.Mass = 1f;
             CameraAngleSpring.Speed = 1f;
 
@@ -164,6 +164,9 @@ namespace RecoilReworkClient.Controllers
             float dt = Time.deltaTime;
             
             _timeSinceLastShot += dt;
+
+            CameraAngleSpring.DampingRatio = CameraRecoilSettings.AngleSpringDampingRatio.Value;
+            CameraAngleSpring.Frequency = CameraRecoilSettings.AngleSpringFrequency.Value;
             
             WeaponKickSpring.Update(dt);
             WeaponPositionSpring.Update(dt);
@@ -347,7 +350,9 @@ namespace RecoilReworkClient.Controllers
             Vector3 recoilAngForce = new Vector3(-modifiedRecoilPitch, AngleRollForce, modifiedRecoilYaw) * angleRecoilStateMult;
             Vector3 recoilPosForce = new Vector3(PositionSidewaysForce, PositionBackwardsForce, -PositionUpwardsForce);
             
-            Vector3 camAngForce = new Vector3(0, 0, camAng.z) * backwardsRecoilCamAngMult;
+            Vector3 camAngForce = Vector3.Scale(
+                new Vector3(0, 0, camAng.z),
+                CameraRecoilSettings.AngleImpulseMultiplier.Value) * backwardsRecoilCamAngMult;
             
             recoilKickForce.z *= Random.Range(-1f, 1f);
             recoilAngForce.z *= Random.Range(-1f, 1f);

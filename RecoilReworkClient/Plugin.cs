@@ -64,6 +64,7 @@ namespace RecoilReworkClient
             OnShotSettings.Bind(3, Category.ShotBehavior, Config);
             SprayPenaltySettings.Bind(4, Category.SprayPenalty, Config);
             StanceSettings.Bind(5, Category.Stance, Config);
+            CameraRecoilSettings.Bind(6, Category.CameraRecoil, Config);
         }
 
         private void FetchData()

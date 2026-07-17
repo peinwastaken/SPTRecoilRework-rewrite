@@ -19,7 +19,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Changes the amount that any ammo's recoil reduction stat affects weapon kick in percentages",
                     new AcceptableValueRange<float>(0.01f, 10f),
-                    new ConfigurationManagerAttributes { Order = 960 }
+                    new ConfigurationManagerAttributes { Order = 960, IsAdvanced = true }
                 )
             );
             
@@ -30,7 +30,7 @@ namespace RecoilReworkClient.Config.Settings
                 new ConfigDescription(
                     "Final weapon kick multiplier independent of any recoil calculations",
                     null,
-                    new ConfigurationManagerAttributes { Order = 920 }
+                    new ConfigurationManagerAttributes { Order = 920, IsAdvanced = true }
                 )
             );
         }
