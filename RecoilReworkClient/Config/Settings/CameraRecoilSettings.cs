@@ -30,7 +30,7 @@ namespace RecoilReworkClient.Config.Settings
             CameraRecoilPitchMultiplier = config.Bind(
                 category,
                 "Camera Recoil Pitch Multiplier",
-                0.15f,
+                1f,
                 new ConfigDescription(
                     "Changes the amount of pitch recoil applied to the camera.",
                     new AcceptableValueRange<float>(-5f, 5f),
@@ -41,7 +41,7 @@ namespace RecoilReworkClient.Config.Settings
             CameraRecoilYawMultiplier = config.Bind(
                 category,
                 "Camera Recoil Yaw Multiplier",
-                0.1f,
+                -1f,
                 new ConfigDescription(
                     "Changes the amount of yaw recoil applied to the camera.",
                     new AcceptableValueRange<float>(-5f, 5f),
