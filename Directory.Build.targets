@@ -12,10 +12,11 @@
     
     <Target Name="CopyClientFiles" AfterTargets="Build" Condition="$(IsClientMod)=='true'">
         <!-- copy client files to spt -->
-        <Message Text="Copying client mod to $(ClientModsDir)" Importance="high"/>
+        <Message Text="Copying client mod to $(ClientModsDir)" Importance="high" Condition="'$(Configuration)' != 'Release'"/>
         <Copy
             SourceFiles="@(ModFiles)"
             DestinationFolder="$(ClientModsDir)\%(RecursiveDir)"
+            Condition="'$(Configuration)' != 'Release'"
             ContinueOnError="false"
         />
 
@@ -34,10 +35,11 @@
 
     <Target Name="CopyServerFiles" AfterTargets="Build" Condition="$(IsServerMod)=='true'">
         <!-- copy server files to spt -->
-        <Message Text="Copying server mod to $(ServerModsDir)" Importance="high"/>
+        <Message Text="Copying server mod to $(ServerModsDir)" Importance="high" Condition="'$(Configuration)' != 'Release'"/>
         <Copy
             SourceFiles="@(ModFiles)"
             DestinationFolder="$(ServerModsDir)\%(RecursiveDir)"
+            Condition="'$(Configuration)' != 'Release'"
             ContinueOnError="false"
         />
 
